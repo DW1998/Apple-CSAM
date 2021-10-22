@@ -1,3 +1,5 @@
+import nnhash
+
 from client import Client
 from server import Server
 
@@ -14,7 +16,8 @@ if __name__ == '__main__':
     c1 = Client(1, server)
     c2 = Client(2, server)
 
-    server.show_clients()
-    c1.send_voucher(str(500))
+    #server.show_clients()
+    #c1.send_voucher(str(500))
 
-
+    hash_val = nnhash.run("dog.png")
+    print(hash_val)
