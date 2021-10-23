@@ -8,7 +8,7 @@ from client import Client
 from server import Server
 
 cur_id = 0
-
+server = Server("Apple")
 
 class Triple:
     def __init__(self, y, id, ad):
@@ -31,6 +31,19 @@ def get_input():
     server.client_list[index].add_triple(triple3)
 
 
+file_client_column = [
+    [
+        sg.Text("Enter ID"),
+        sg.InputText(size=(25, 1), do_not_clear=False, key="-ID-"),
+        sg.Button("Add Client"),
+    ],
+    [
+        sg.Listbox(
+            values=[server.client_id_list], enable_events=True, size=(40, 30), key="-CLIENT LIST-"
+        )
+    ]
+]
+
 file_list_column = [
     [
         sg.Text("Image Folder"),
@@ -39,7 +52,7 @@ file_list_column = [
     ],
     [
         sg.Listbox(
-            values=[], enable_events=True, size=(40, 20), key="-FILE LIST-"
+            values=[], enable_events=True, size=(40, 30), key="-FILE LIST-"
         )
     ],
 ]
@@ -56,13 +69,15 @@ image_viewer_column = [
 
 layout = [
     [
+        sg.Column(file_client_column),
+        sg.VSeperator(),
         sg.Column(file_list_column),
         sg.VSeperator(),
         sg.Column(image_viewer_column),
     ]
 ]
 
-window = sg.Window("Image Viewer", layout)
+window = sg.Window("Apple CSAM", layout)
 
 # Run the Event Loop
 
@@ -91,20 +106,17 @@ while True:
             filename = os.path.join(
                 values["-FOLDER-"], values["-FILE LIST-"][0]
             )
+            print("got here")
             window["-TOUT-"].update(filename)
             window["-IMAGE-"].update(filename=filename)
 
         except:
             pass
+    elif event == "Add Client":
+        if values["-ID-"] == "":
+            print("Need to enter ID")
+        else:
+            Client(values["-ID-"], server)
+            window["-CLIENT LIST-"].update(server.client_id_list)
 
 window.close()
-
-if __name__ == '__main__':
-    server = Server("Apple")
-    c1 = Client(1, server)
-    c2 = Client(2, server)
-
-    hash_val = nnhash.run("dog.png")
-    triple1 = Triple(nnhash.run("dog.png"), get_id(), Image.open("dog.png"))
-    triple2 = Triple(nnhash.run("dog.png"), get_id(), Image.open("dog.png"))
-    print(hash_val)
