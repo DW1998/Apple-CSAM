@@ -14,6 +14,7 @@ class Client:
 
     def add_triple(self, t):
         self.triples.append(t)
+        print("triple" + str(t.id) + " was added for client " + str(self.id))
 
     def send_voucher(self, voucher):
         self.server.receive_voucher(self, voucher)
