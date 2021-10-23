@@ -1,6 +1,4 @@
 
-
-
 class Client:
     def __init__(self, id, server):
         self.id = id
