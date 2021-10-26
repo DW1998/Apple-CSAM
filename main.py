@@ -13,6 +13,7 @@ from server import Server
 # Parent Directory
 parent_dir = "D:/Apple-CSAM-Files/"
 clients_dir = "D:/Apple-CSAM-Files/Clients/"
+client_id_file = "Client_IDs.csv"
 
 class Triple:
     def __init__(self, y, id, ad):
@@ -37,7 +38,7 @@ def get_input():
 
 def read_client_ids():
     client_ids = list()
-    f = open(parent_dir + "Client_IDs.csv", "r")
+    f = open(parent_dir + client_id_file, "r")
     reader = csv.reader(f)
     for row in reader:
         client_ids.append(row[0])
@@ -45,13 +46,13 @@ def read_client_ids():
 
 
 def save_client_ids():
-    f = open(parent_dir + "Client_IDs.csv", "w", encoding="UTF8", newline='')
+    f = open(parent_dir + client_id_file, "w", encoding="UTF8", newline='')
     writer = csv.writer(f)
     for c in server.client_list:
         l = [c.id]
         writer.writerow(l)
     f.close()
-    print("wrote data")
+    print("wrote data to %s%s" % (parent_dir, client_id_file))
 
 
 cur_id = 0
