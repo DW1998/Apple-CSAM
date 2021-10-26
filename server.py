@@ -25,11 +25,12 @@ class Server:
             index = self.client_id_list.index(client_id)
             self.client_list.pop(index)
             self.client_id_list.pop(index)
+            print("client " + str(client_id) + " was deleted")
         else:
             print("ID " + str(client_id) + " was not found")
 
     def show_clients(self):
-        for c in self.client_list: print(c)
+        print(self.client_id_list)
 
     def receive_voucher(self, client, voucher):
         print(self.name + "received voucher " + voucher + " from " + str(client.id))

@@ -36,7 +36,6 @@ def read_client_ids():
     reader = csv.reader(f)
     for row in reader:
         client_ids.append(row[0])
-    print(client_ids)
     return client_ids
 
 
@@ -52,6 +51,9 @@ def save_client_ids():
 
 cur_id = 0
 server = Server("Apple", read_client_ids())
+test = list()
+for ID in server.client_id_list:
+    test.append(ID)
 
 file_client_column = [
     [
@@ -62,7 +64,7 @@ file_client_column = [
     ],
     [
         sg.Listbox(
-            values=[server.client_id_list], enable_events=True, size=(50, 30), key="-CLIENT LIST-"
+            values=server.client_id_list, enable_events=True, size=(50, 30), key="-CLIENT LIST-"
         )
     ]
 ]
@@ -129,7 +131,6 @@ while True:
             filename = os.path.join(
                 values["-FOLDER-"], values["-FILE LIST-"][0]
             )
-            print("got here")
             window["-TOUT-"].update(filename)
             window["-IMAGE-"].update(filename=filename)
 
@@ -137,7 +138,7 @@ while True:
             pass
     elif event == "Add Client":
         if values["-ID-"] == "":
-            print("Need to enter ID")
+            print("need to enter ID")
         else:
             Client(values["-ID-"], server)
 
@@ -145,6 +146,8 @@ while True:
     elif event == "Delete Client":
         if len((values["-CLIENT LIST-"])) > 0:
             server.delete_client(values["-CLIENT LIST-"][0])
+        else:
+            print("need to select client")
         window["-CLIENT LIST-"].update(server.client_id_list)
 
 window.close()
