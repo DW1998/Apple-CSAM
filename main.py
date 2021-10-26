@@ -12,8 +12,9 @@ from server import Server
 
 # Parent Directory
 parent_dir = "D:/Apple-CSAM-Files/"
-clients_dir = "D:/Apple-CSAM-Files/Clients/"
+clients_dir = parent_dir + "Clients/"
 client_id_file = "Client_IDs.csv"
+
 
 class Triple:
     def __init__(self, y, id, ad):
@@ -40,6 +41,7 @@ def read_client_ids():
     client_ids = list()
     f = open(parent_dir + client_id_file, "r")
     reader = csv.reader(f)
+    next(reader)
     for row in reader:
         client_ids.append(row[0])
     return client_ids
@@ -48,16 +50,15 @@ def read_client_ids():
 def save_client_ids():
     f = open(parent_dir + client_id_file, "w", encoding="UTF8", newline='')
     writer = csv.writer(f)
+    writer.writerow(["ID"])
     for c in server.client_list:
-        l = [c.id]
-        writer.writerow(l)
+        writer.writerow([c.id])
     f.close()
     print("wrote data to %s%s" % (parent_dir, client_id_file))
 
 
 cur_id = 0
 server = Server("Apple", read_client_ids())
-
 
 file_client_column = [
     [
@@ -92,7 +93,7 @@ file_list_column = [
 image_viewer_column = [
     [sg.Text("Choose an image from list on left:")],
     [sg.Text(size=(40, 1), key="-TOUT-")],
-    [sg.Image(key="-IMAGE-")],
+    [sg.Image(key="-IMAGE-", size=(500, 500))],
 ]
 
 # ----- Full layout -----
@@ -137,8 +138,7 @@ while True:
                 values["-FOLDER-"], values["-FILE LIST-"][0]
             )
             window["-TOUT-"].update(filename)
-            window["-IMAGE-"].update(filename=filename)
-
+            window["-IMAGE-"].update(filename=filename, size=(500, 500))
         except:
             pass
     elif event == "Add Client":
@@ -146,7 +146,6 @@ while True:
             print("need to enter ID")
         else:
             Client(values["-ID-"], server)
-
         window["-CLIENT LIST-"].update(server.client_id_list)
     elif event == "Delete Client":
         if len((values["-CLIENT LIST-"])) > 0:
@@ -163,6 +162,7 @@ while True:
             dst_name = clients_dir + values["-CLIENT LIST-"][0] + "/" + values["-FILE LIST-"][0]
             copyfile(filename, dst_name)
             print("uploaded file from %s to %s" % (filename, dst_name))
+            print(nnhash.calc_nnhash(dst_name))
 
 window.close()
 

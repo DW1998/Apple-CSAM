@@ -17,7 +17,7 @@ import numpy as np
 from PIL import Image
 
 
-def run(picture):
+def calc_nnhash(picture):
     # Load ONNX model
     session = onnxruntime.InferenceSession('model.onnx')
 
@@ -42,4 +42,4 @@ def run(picture):
     hash_bits = ''.join(['1' if it >= 0 else '0' for it in hash_output])
     hash_hex = '{:0{}x}'.format(int(hash_bits, 2), len(hash_bits) // 4)
 
-    return(hash_hex)
+    return hash_hex
