@@ -3,12 +3,11 @@ from PIL import Image
 import nnhash
 import PySimpleGUI as sg
 import os.path
+import csv
 
 from client import Client
 from server import Server
 
-cur_id = 0
-server = Server("Apple")
 
 class Triple:
     def __init__(self, y, id, ad):
@@ -19,7 +18,7 @@ class Triple:
 
 def get_id():
     global cur_id
-    cur_id = cur_id + 1
+    cur_id += 1
     return cur_id
 
 
@@ -27,19 +26,43 @@ def get_input():
     client_id = int(input("Enter next client id"))
     pic = input("Enter next picture")
     triple3 = Triple(nnhash.run(pic), get_id(), Image.open(pic))
-    index = server.client_id_list.index(client_id)
+    index = server.client_list.index(client_id)
     server.client_list[index].add_triple(triple3)
 
+
+def read_client_ids():
+    client_ids = list()
+    f = open('D:\Apple-CSAM-Files\Client_IDs.csv', 'r')
+    reader = csv.reader(f)
+    for row in reader:
+        client_ids.append(row[0])
+    print(client_ids)
+    return client_ids
+
+
+def save_client_ids():
+    f = open('D:\Apple-CSAM-Files\Client_IDs.csv', 'w', encoding='UTF8', newline='')
+    writer = csv.writer(f)
+    for c in server.client_list:
+        l = [c.id]
+        writer.writerow(l)
+    f.close()
+    print("wrote data")
+
+
+cur_id = 0
+server = Server("Apple", read_client_ids())
 
 file_client_column = [
     [
         sg.Text("Enter ID"),
-        sg.InputText(size=(25, 1), do_not_clear=False, key="-ID-"),
+        sg.InputText(size=(19, 1), do_not_clear=False, key="-ID-"),
         sg.Button("Add Client"),
+        sg.Button("Delete Client")
     ],
     [
         sg.Listbox(
-            values=[server.client_id_list], enable_events=True, size=(40, 30), key="-CLIENT LIST-"
+            values=[server.client_id_list], enable_events=True, size=(50, 30), key="-CLIENT LIST-"
         )
     ]
 ]
@@ -47,12 +70,12 @@ file_client_column = [
 file_list_column = [
     [
         sg.Text("Image Folder"),
-        sg.In(size=(25, 1), enable_events=True, key="-FOLDER-"),
+        sg.In(size=(31, 1), enable_events=True, key="-FOLDER-"),
         sg.FolderBrowse(),
     ],
     [
         sg.Listbox(
-            values=[], enable_events=True, size=(40, 30), key="-FILE LIST-"
+            values=[], enable_events=True, size=(50, 30), key="-FILE LIST-"
         )
     ],
 ]
@@ -98,7 +121,7 @@ while True:
             f
             for f in file_list
             if os.path.isfile(os.path.join(folder, f))
-            and f.lower().endswith((".png", ".gif"))
+               and f.lower().endswith((".png", ".gif"))
         ]
         window["-FILE LIST-"].update(fnames)
     elif event == "-FILE LIST-":  # A file was chosen from the listbox
@@ -117,6 +140,13 @@ while True:
             print("Need to enter ID")
         else:
             Client(values["-ID-"], server)
-            window["-CLIENT LIST-"].update(server.client_id_list)
+
+        window["-CLIENT LIST-"].update(server.client_id_list)
+    elif event == "Delete Client":
+        if len((values["-CLIENT LIST-"])) > 0:
+            server.delete_client(values["-CLIENT LIST-"][0])
+        window["-CLIENT LIST-"].update(server.client_id_list)
 
 window.close()
+
+save_client_ids()
