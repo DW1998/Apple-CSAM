@@ -1,13 +1,18 @@
+from shutil import copyfile
+
 from PIL import Image
 
 import nnhash
 import PySimpleGUI as sg
-import os.path
+import os
 import csv
 
 from client import Client
 from server import Server
 
+# Parent Directory
+parent_dir = "D:/Apple-CSAM-Files/"
+clients_dir = "D:/Apple-CSAM-Files/Clients/"
 
 class Triple:
     def __init__(self, y, id, ad):
@@ -32,7 +37,7 @@ def get_input():
 
 def read_client_ids():
     client_ids = list()
-    f = open('D:\Apple-CSAM-Files\Client_IDs.csv', 'r')
+    f = open(parent_dir + "Client_IDs.csv", "r")
     reader = csv.reader(f)
     for row in reader:
         client_ids.append(row[0])
@@ -40,7 +45,7 @@ def read_client_ids():
 
 
 def save_client_ids():
-    f = open('D:\Apple-CSAM-Files\Client_IDs.csv', 'w', encoding='UTF8', newline='')
+    f = open(parent_dir + "Client_IDs.csv", "w", encoding="UTF8", newline='')
     writer = csv.writer(f)
     for c in server.client_list:
         l = [c.id]
@@ -51,9 +56,7 @@ def save_client_ids():
 
 cur_id = 0
 server = Server("Apple", read_client_ids())
-test = list()
-for ID in server.client_id_list:
-    test.append(ID)
+
 
 file_client_column = [
     [
@@ -72,8 +75,9 @@ file_client_column = [
 file_list_column = [
     [
         sg.Text("Image Folder"),
-        sg.In(size=(31, 1), enable_events=True, key="-FOLDER-"),
+        sg.In(size=(22, 1), enable_events=True, key="-FOLDER-"),
         sg.FolderBrowse(),
+        sg.Button("Upload")
     ],
     [
         sg.Listbox(
@@ -149,6 +153,15 @@ while True:
         else:
             print("need to select client")
         window["-CLIENT LIST-"].update(server.client_id_list)
+    elif event == "Upload":
+        if len(values["-CLIENT LIST-"]) == 0:
+            print("need to select client")
+        elif len(values["-FILE LIST-"]) == 0:
+            print("need to select file")
+        else:
+            dst_name = clients_dir + values["-CLIENT LIST-"][0] + "/" + values["-FILE LIST-"][0]
+            copyfile(filename, dst_name)
+            print("uploaded file from %s to %s" % (filename, dst_name))
 
 window.close()
 

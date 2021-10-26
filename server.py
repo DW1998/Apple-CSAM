@@ -1,4 +1,11 @@
+import os
+import shutil
+
 from client import Client
+
+# Parent Directory
+parent_dir = "D:/Apple-CSAM-Files/"
+clients_dir = "D:/Apple-CSAM-Files/Clients/"
 
 
 class Server:
@@ -10,13 +17,19 @@ class Server:
 
     def add_clients(self, client_ids):
         for c_id in client_ids:
-            client = Client(c_id, self)
+            Client(c_id, self)
 
     def add_client(self, client):
         if client.id not in self.client_id_list:
             self.client_list.append(client)
             self.client_id_list.append(client.id)
             print("client " + str(client.id) + " was added")
+            path = os.path.join(clients_dir, client.id)
+            try:
+                os.mkdir(path, 0o777)
+                print("added dir: " + path)
+            except OSError:
+                pass
         else:
             print("ID " + str(client.id) + " was already found")
 
@@ -26,6 +39,12 @@ class Server:
             self.client_list.pop(index)
             self.client_id_list.pop(index)
             print("client " + str(client_id) + " was deleted")
+            path = os.path.join(clients_dir, client_id)
+            try:
+                shutil.rmtree(path)
+                print("deleted dir: " + path)
+            except OSError:
+                pass
         else:
             print("ID " + str(client_id) + " was not found")
 
