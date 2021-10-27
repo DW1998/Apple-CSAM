@@ -30,10 +30,6 @@ class Server:
             try:
                 os.mkdir(path, 0o777)
                 print("added dir: " + path)
-                f = open(path + "/triples.csv", "w", encoding="UTF8", newline='')
-                writer = csv.writer(f)
-                header = ["y", "id", "ad"]
-                writer.writerow(header)
             except OSError:
                 pass
         else:

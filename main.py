@@ -1,12 +1,12 @@
 import pickle
 from shutil import copyfile
 
-from PIL import Image
+import PIL
 
 import nnhash
 import PySimpleGUI as sg
+import numpy as np
 import os
-import csv
 
 from client import Client
 from server import Server
@@ -17,11 +17,11 @@ clients_dir = parent_dir + "Clients/"
 client_id_file = "Client_IDs.csv"
 
 
-def save_object(obj):
+def save_object(obj, path):
     try:
-        with open("server.pickle", "wb") as f:
+        with open(path, "wb") as f:
             pickle.dump(obj, f, protocol=pickle.HIGHEST_PROTOCOL)
-            print("saved to server.pickle")
+            print("saved to %s" % path)
     except Exception as ex:
         print("Error during pickling object:", ex)
 
@@ -148,9 +148,19 @@ while True:
             dst_name = clients_dir + values["-CLIENT LIST-"][0] + "/" + values["-FILE LIST-"][0]
             copyfile(filename, dst_name)
             print("uploaded file from %s to %s" % (filename, dst_name))
-            print(nnhash.calc_nnhash(dst_name))
+            an_image = PIL.Image.open(dst_name)
+            image_sequence = an_image.getdata()
+            image_array = np.array(image_sequence)
+            triple = Triple(nnhash.calc_nnhash(dst_name), server.cur_id, image_array)
+            server.inc_cur_id()
+            print(triple.y)
+            print(triple.id)
+            print(triple.ad)
+            index = server.client_id_list.index(values["-CLIENT LIST-"][0])
+            server.client_list[index].add_triple(triple)
+
 
 window.close()
 
-save_object(server)
+save_object(server, "server.pickle")
 
