@@ -1,3 +1,4 @@
+import pickle
 from shutil import copyfile
 
 from PIL import Image
@@ -16,6 +17,23 @@ clients_dir = parent_dir + "Clients/"
 client_id_file = "Client_IDs.csv"
 
 
+def save_object(obj):
+    try:
+        with open("server.pickle", "wb") as f:
+            pickle.dump(obj, f, protocol=pickle.HIGHEST_PROTOCOL)
+            print("saved to server.pickle")
+    except Exception as ex:
+        print("Error during pickling object:", ex)
+
+
+def load_object(f_name):
+    try:
+        with open(f_name, "rb") as f:
+            return pickle.load(f)
+    except Exception as ex:
+        print("Error during unpickling object:", ex)
+
+
 class Triple:
     def __init__(self, y, id, ad):
         self.y = y
@@ -23,42 +41,10 @@ class Triple:
         self.ad = ad
 
 
-def get_id():
-    global cur_id
-    cur_id += 1
-    return cur_id
-
-
-def get_input():
-    client_id = int(input("Enter next client id"))
-    pic = input("Enter next picture")
-    triple3 = Triple(nnhash.run(pic), get_id(), Image.open(pic))
-    index = server.client_list.index(client_id)
-    server.client_list[index].add_triple(triple3)
-
-
-def read_client_ids():
-    client_ids = list()
-    f = open(parent_dir + client_id_file, "r")
-    reader = csv.reader(f)
-    next(reader)
-    for row in reader:
-        client_ids.append(row[0])
-    return client_ids
-
-
-def save_client_ids():
-    f = open(parent_dir + client_id_file, "w", encoding="UTF8", newline='')
-    writer = csv.writer(f)
-    writer.writerow(["ID"])
-    for c in server.client_list:
-        writer.writerow([c.id])
-    f.close()
-    print("wrote data to %s%s" % (parent_dir, client_id_file))
-
-
-cur_id = 0
-server = Server("Apple", read_client_ids())
+if os.path.isfile("server.pickle"):
+    server = load_object("server.pickle")
+else:
+    server = Server("Apple", list())
 
 file_client_column = [
     [
@@ -166,4 +152,5 @@ while True:
 
 window.close()
 
-save_client_ids()
+save_object(server)
+

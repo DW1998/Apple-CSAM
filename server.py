@@ -15,6 +15,7 @@ class Server:
         self.client_list = list()
         self.client_id_list = list()
         self.add_clients(client_ids)
+        self.cur_id = 0
 
     def add_clients(self, client_ids):
         for c_id in client_ids:
@@ -55,6 +56,9 @@ class Server:
 
     def show_clients(self):
         print(self.client_id_list)
+
+    def inc_cur_id(self):
+        self.cur_id += 1
 
     def receive_voucher(self, client, voucher):
         print(self.name + "received voucher " + voucher + " from " + str(client.id))
