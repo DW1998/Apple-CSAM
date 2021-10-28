@@ -1,4 +1,3 @@
-import csv
 import os
 import shutil
 
@@ -16,10 +15,11 @@ class Server:
         self.client_id_list = list()
         self.add_clients(client_ids)
         self.cur_id = 0
+        self.threshold = 10
 
     def add_clients(self, client_ids):
         for c_id in client_ids:
-            Client(c_id, self)
+            self.add_client(Client(c_id, self))
 
     def add_client(self, client):
         if client.id not in self.client_id_list:

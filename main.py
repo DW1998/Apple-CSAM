@@ -8,8 +8,11 @@ import PySimpleGUI as sg
 import numpy as np
 import os
 
+from Crypto.Random import get_random_bytes
+
 from client import Client
 from server import Server
+import util
 
 # Parent Directory
 parent_dir = "D:/Apple-CSAM-Files/"
@@ -45,6 +48,13 @@ if os.path.isfile("server.pickle"):
     server = load_object("server.pickle")
 else:
     server = Server("Apple", list())
+
+adkey = get_random_bytes(16)
+data = "i wanna encrypt this with AES128"
+print("adkey is: %s" % adkey)
+encryption = util.aes128_enc(adkey, data)
+decryption = util.aes128_dec(adkey, encryption)
+
 
 file_client_column = [
     [
