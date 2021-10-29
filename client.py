@@ -1,19 +1,50 @@
+from Crypto.Random import get_random_bytes
+
+import util
+
+
+def dec_image(path, img_as_byte):
+    f = open(path, 'wb')
+    f.write(img_as_byte)
+    f.close
+
+
+class Voucher:
+    def __init__(self, id, Q1, ct1, Q2, ct2, rct):
+        self.id = id
+        self.Q1 = Q1
+        self.ct1 = ct1
+        self.Q2 = Q2
+        self.ct2 = ct2
+        self.rct = rct
+
+
 class Client:
     def __init__(self, id, server):
         self.id = id
         self.server = server
         self.triples = list()
         self.hkey = 0  # DHF, K
-        self.adkey = 0  # (Enc, Dec), K'
+        self.adkey = get_random_bytes(16)  # (Enc, Dec), K'
         self.fkey = 0  # PRF, K''
         self.sh_pol = 0  # shamir secret sharing
 
     def show_server(self):
         print(self.server)
 
-    def add_triple(self, t):
-        self.triples.append(t)
-        print("triple" + str(t.id) + " was added for client " + str(self.id))
+    def add_triple(self, triple):
+        self.triples.append(triple)
+        print(triple.y)
+        print(triple.id)
+        print(triple.ad)
+        print("triple" + str(triple.id) + " was added for client " + str(self.id))
+        self.send_voucher(triple)
 
-    def send_voucher(self, voucher):
+    def generate_voucher(self, triple):
+        adct = util.aes128_enc(self.adkey, triple.ad)
+        voucher = Voucher(0, 0, 0, 0, 0, 0)
+        return voucher
+
+    def send_voucher(self, triple):
+        voucher = self.generate_voucher(triple)
         self.server.receive_voucher(self, voucher)

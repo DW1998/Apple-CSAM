@@ -1,3 +1,5 @@
+import base64
+import io
 import pickle
 from shutil import copyfile
 
@@ -48,12 +50,6 @@ if os.path.isfile("server.pickle"):
     server = load_object("server.pickle")
 else:
     server = Server("Apple", list())
-
-adkey = get_random_bytes(16)
-data = "i wanna encrypt this with AES128"
-print("adkey is: %s" % adkey)
-encryption = util.aes128_enc(adkey, data)
-decryption = util.aes128_dec(adkey, encryption)
 
 
 file_client_column = [
@@ -141,7 +137,7 @@ while True:
         if values["-ID-"] == "":
             print("need to enter ID")
         else:
-            Client(values["-ID-"], server)
+            server.add_client(Client(values["-ID-"], server))
         window["-CLIENT LIST-"].update(server.client_id_list)
     elif event == "Delete Client":
         if len((values["-CLIENT LIST-"])) > 0:
@@ -158,14 +154,10 @@ while True:
             dst_name = clients_dir + values["-CLIENT LIST-"][0] + "/" + values["-FILE LIST-"][0]
             copyfile(filename, dst_name)
             print("uploaded file from %s to %s" % (filename, dst_name))
-            an_image = PIL.Image.open(dst_name)
-            image_sequence = an_image.getdata()
-            image_array = np.array(image_sequence)
-            triple = Triple(nnhash.calc_nnhash(dst_name), server.cur_id, image_array)
+            with open(dst_name, "rb") as imageFile:
+                byte_arr = bytearray(imageFile.read())
+            triple = Triple(nnhash.calc_nnhash(dst_name), server.cur_id, byte_arr)
             server.inc_cur_id()
-            print(triple.y)
-            print(triple.id)
-            print(triple.ad)
             index = server.client_id_list.index(values["-CLIENT LIST-"][0])
             server.client_list[index].add_triple(triple)
 

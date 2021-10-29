@@ -6,11 +6,10 @@ from Crypto.Random import get_random_bytes
 
 def aes128_enc(adkey, ad):
     header = b"header"
-    data = ad.encode()
     nonce = get_random_bytes(12)
     cipher = AES.new(adkey, AES.MODE_GCM, nonce=nonce)
     cipher.update(header)
-    ciphertext, tag = cipher.encrypt_and_digest(data)
+    ciphertext, tag = cipher.encrypt_and_digest(ad)
 
     json_k = ['nonce', 'header', 'ciphertext', 'tag']
     json_v = [ b64encode(x).decode('utf-8') for x in [cipher.nonce, header, ciphertext, tag]]

@@ -57,4 +57,4 @@ class Server:
         self.cur_id += 1
 
     def receive_voucher(self, client, voucher):
-        print(self.name + "received voucher " + voucher + " from " + str(client.id))
+        print("%s received voucher with ID %s from %s" % (self.name, voucher.id, client.id))
