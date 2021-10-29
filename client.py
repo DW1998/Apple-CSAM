@@ -17,9 +17,6 @@ class Voucher:
         self.rct = rct
 
 
-
-
-
 class Client:
     def __init__(self, id, server):
         self.id = id
@@ -27,7 +24,7 @@ class Client:
         self.triples = list()
         self.hkey = 0  # DHF, K
         self.adkey = get_random_bytes(16)  # (Enc, Dec), K'
-        self.fkey = 0  # PRF, K''
+        self.fkey = get_random_bytes(16)  # PRF, K''
         self.sh_pol = 0  # shamir secret sharing
 
     def show_server(self):
@@ -43,8 +40,9 @@ class Client:
 
     def generate_voucher(self, triple):
         adct = util.aes128_enc(self.adkey, triple.ad)
-        # path = clients_dir + "/" + str(self.id) + "/" + str(triple.id) + ".png"
+        path = clients_dir + "/" + str(self.id) + "/" + str(triple.id) + ".png"
         # self.dec_image(path, adct)
+        prf = util.calc_prf(self.fkey, triple.id)
         voucher = Voucher(0, 0, 0, 0, 0, 0)
         return voucher
 

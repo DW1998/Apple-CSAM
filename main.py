@@ -3,14 +3,9 @@ import io
 import pickle
 from shutil import copyfile
 
-import PIL
-
 import nnhash
 import PySimpleGUI as sg
-import numpy as np
 import os
-
-from Crypto.Random import get_random_bytes
 
 from client import Client
 from server import Server
@@ -50,6 +45,8 @@ if os.path.isfile("server.pickle"):
     server = load_object("server.pickle")
 else:
     server = Server("Apple", list())
+
+util.calc_dhf(0, 0)
 
 file_client_column = [
     [
