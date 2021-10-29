@@ -51,7 +51,6 @@ if os.path.isfile("server.pickle"):
 else:
     server = Server("Apple", list())
 
-
 file_client_column = [
     [
         sg.Text("Enter ID"),

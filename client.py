@@ -2,11 +2,9 @@ from Crypto.Random import get_random_bytes
 
 import util
 
-
-def dec_image(path, img_as_byte):
-    f = open(path, 'wb')
-    f.write(img_as_byte)
-    f.close
+# Parent Directory
+parent_dir = "D:/Apple-CSAM-Files/"
+clients_dir = parent_dir + "Clients/"
 
 
 class Voucher:
@@ -17,6 +15,9 @@ class Voucher:
         self.Q2 = Q2
         self.ct2 = ct2
         self.rct = rct
+
+
+
 
 
 class Client:
@@ -42,9 +43,17 @@ class Client:
 
     def generate_voucher(self, triple):
         adct = util.aes128_enc(self.adkey, triple.ad)
+        # path = clients_dir + "/" + str(self.id) + "/" + str(triple.id) + ".png"
+        # self.dec_image(path, adct)
         voucher = Voucher(0, 0, 0, 0, 0, 0)
         return voucher
 
     def send_voucher(self, triple):
         voucher = self.generate_voucher(triple)
         self.server.receive_voucher(self, voucher)
+
+    def dec_image(self, path, adct):
+        img_as_byte = util.aes128_dec(self.adkey, adct)
+        f = open(path, 'wb')
+        f.write(img_as_byte)
+        f.close()
