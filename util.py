@@ -7,6 +7,8 @@ from Crypto.Random import get_random_bytes
 import hmac
 
 dhf_l = (2 ** 64) - 59
+sh_p = (2 ** 128) - 1
+test_num = 339177328369128880911409701061729234965
 
 
 def aes128_enc(adkey, ad):
@@ -50,6 +52,15 @@ def calc_dhf(hkey, x):
     # K x X -> R, l = 64, s = upper bound of set S, t + 1 = threshold number
     # K := F^s*t_l, X := F_l, R := F^s+1_l
     return 0
+
+
+def init_sh_poly(adkey, t):
+    a = list()
+    a.append(int.from_bytes(adkey, "big"))
+    for i in range(1, t + 1):
+        a.append(int.from_bytes(get_random_bytes(16), "big") - 1)
+    print(a)
+    return a
 
 
 def is_prime(n):

@@ -26,6 +26,7 @@ class Client:
         self.adkey = get_random_bytes(16)  # (Enc, Dec), K'
         self.fkey = get_random_bytes(16)  # PRF, K''
         self.sh_pol = 0  # shamir secret sharing
+        self.a = util.init_sh_poly(self.adkey, server.threshold)
 
     def show_server(self):
         print(self.server)
