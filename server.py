@@ -15,7 +15,8 @@ class Server:
         self.client_id_list = list()
         self.add_clients(client_ids)
         self.cur_id = 0
-        self.threshold = 10
+        self.s = 10
+        self.t = 5
 
     def add_clients(self, client_ids):
         for c_id in client_ids:

@@ -1,5 +1,3 @@
-import base64
-import io
 import pickle
 from shutil import copyfile
 
@@ -9,7 +7,6 @@ import os
 
 from client import Client
 from server import Server
-import util
 
 # Parent Directory
 parent_dir = "D:/Apple-CSAM-Files/"
@@ -22,16 +19,16 @@ def save_object(obj, path):
         with open(path, "wb") as f:
             pickle.dump(obj, f, protocol=pickle.HIGHEST_PROTOCOL)
             print("saved to %s" % path)
-    except Exception as ex:
-        print("Error during pickling object:", ex)
+    except Exception as e:
+        print("Error during pickling object:", e)
 
 
 def load_object(f_name):
     try:
         with open(f_name, "rb") as f:
             return pickle.load(f)
-    except Exception as ex:
-        print("Error during unpickling object:", ex)
+    except Exception as e:
+        print("Error during unpickling object:", e)
 
 
 class Triple:
@@ -45,8 +42,6 @@ if os.path.isfile("server.pickle"):
     server = load_object("server.pickle")
 else:
     server = Server("Apple", list())
-
-util.calc_dhf(0, 0)
 
 file_client_column = [
     [
@@ -97,6 +92,7 @@ layout = [
 ]
 
 window = sg.Window("Apple CSAM", layout)
+filename = ""
 
 # Run the Event Loop
 
@@ -110,9 +106,9 @@ while True:
         try:
             # Get list of files in folder
             file_list = os.listdir(folder)
-        except:
+        except Exception as ex:
             file_list = []
-
+            print("file_list is empty", ex)
         fnames = [
             f
             for f in file_list
@@ -127,8 +123,8 @@ while True:
             )
             window["-TOUT-"].update(filename)
             window["-IMAGE-"].update(filename=filename, size=(500, 500))
-        except:
-            pass
+        except Exception as ex:
+            print("could not update filename", ex)
     elif event == "Add Client":
         if values["-ID-"] == "":
             print("need to enter ID")
@@ -142,6 +138,7 @@ while True:
             print("need to select client")
         window["-CLIENT LIST-"].update(server.client_id_list)
     elif event == "Upload":
+        print("------------------------------------------------------------------------------------------------------")
         if len(values["-CLIENT LIST-"]) == 0:
             print("need to select client")
         elif len(values["-FILE LIST-"]) == 0:
@@ -157,8 +154,6 @@ while True:
             index = server.client_id_list.index(values["-CLIENT LIST-"][0])
             server.client_list[index].add_triple(triple)
 
-
 window.close()
 
 save_object(server, "server.pickle")
-

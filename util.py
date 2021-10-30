@@ -36,22 +36,43 @@ def aes128_dec(adkey, adct):
         print("ad is: %s" % ad)
     except (ValueError, KeyError):
         print("Incorrect decryption")
+        return None
     return ad
 
 
-def calc_prf(fkey, id):
+def calc_prf(fkey, id, s):
     # x, z, x', r' el_of F^2_sh * X * R, X is domain of DHF, R is range of DHF
-    message = bytes(id)
-    h = hmac.new(fkey, message, hashlib.sha1).hexdigest()
-    print(h)
-    print(len(h))
-    return h
+    h = hmac.new(fkey, bytes(id), hashlib.sha1).hexdigest()
+    print("h: %s, length of h: %s" % (h, len(h)))
+    print("h as int: %s, length of h as int: %s" % (int.from_bytes(h.encode(), "big"),
+                                                    len(str(int.from_bytes(h.encode(), "big")))))
+    print("sh_p: %s, length of sh_p: %s" % (sh_p, len(str(sh_p))))
+    print("dhf_l: %s, length of dhl_l %s" % (dhf_l, len(str(dhf_l))))
+    sh_x = int.from_bytes(h.encode(), "big") % sh_p
+    print("sh_x: %s" % sh_x)
+    h = hmac.new(fkey, h.encode(), hashlib.sha1).hexdigest()
+    sh_z = int.from_bytes(h.encode(), "big") % sh_p
+    print("sh_z: %s" % sh_z)
+    h = hmac.new(fkey, h.encode(), hashlib.sha1).hexdigest()
+    x = int.from_bytes(h.encode(), "big") % dhf_l
+    print("x: %s" % x)
+    r = list()
+    for i in range(0, s + 1):
+        h = hmac.new(fkey, h.encode(), hashlib.sha1).hexdigest()
+        r.append(int.from_bytes(h.encode(), "big") % dhf_l)
+    print("prf r: %s" % r)
+    return sh_x, sh_z, x, r
 
 
 def calc_dhf(hkey, x):
     # K x X -> R, l = 64, s = upper bound of set S, t + 1 = threshold number
-    # K := F^s*t_l, X := F_l, R := F^s+1_l
-    return 0
+    # K := F^s*t_l, X := F_l, R := F^s+1_lk
+    r = list()
+    r.append(x)
+    for p in hkey:
+        r.append(calc_poly(x, p) % dhf_l)
+    print("dhf r: %s" % r)
+    return r
 
 
 def init_sh_poly(adkey, t):
@@ -63,10 +84,10 @@ def init_sh_poly(adkey, t):
     return a
 
 
-def calc_sh_z(x, a):
+def calc_poly(x, pol):
     res = 0
-    for i in range(0, len(a)):
-        res += a[i] * (x ** i)
+    for i in range(0, len(pol)):
+        res += pol[i] * (x ** i)
     return res % sh_p
 
 
