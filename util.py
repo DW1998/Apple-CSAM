@@ -63,6 +63,25 @@ def init_sh_poly(adkey, t):
     return a
 
 
+def calc_sh_z(x, a):
+    res = 0
+    for i in range(0, len(a)):
+        res += a[i] * (x ** i)
+    return res % sh_p
+
+
+def calc_rct(rkey, r, adct, sh):
+    json_k = ['r', 'adct', 'sh']
+    json_v = [r, adct, sh]
+    rct_data = json.dumps(dict(zip(json_k, json_v))).encode()
+    print("rct_data is: %s" % rct_data)
+    rct = aes128_enc(rkey, rct_data)
+    print("rct is: %s" % rct)
+    rct_dec = aes128_dec(rkey, rct)
+    print("rct_dec is: %s" % rct_dec)
+    return rct
+
+
 def is_prime(n):
     for i in range(2, int(n ** 0.5) + 1):
         if n % i == 0:

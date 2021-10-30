@@ -1,3 +1,6 @@
+import json
+from base64 import b64encode
+
 from Crypto.Random import get_random_bytes
 
 import util
@@ -41,9 +44,17 @@ class Client:
 
     def generate_voucher(self, triple):
         adct = util.aes128_enc(self.adkey, triple.ad)
-        path = clients_dir + "/" + str(self.id) + "/" + str(triple.id) + ".png"
+        # path = clients_dir + "/" + str(self.id) + "/" + str(triple.id) + ".png"
         # self.dec_image(path, adct)
         prf = util.calc_prf(self.fkey, triple.id)
+        x = 5
+        r = 7
+        z = util.calc_sh_z(x, self.a)
+        json_k = ['x', 'z']
+        json_v = [x, z]
+        sh = json.dumps(dict(zip(json_k, json_v)))
+        rkey = get_random_bytes(16)
+        rct = util.calc_rct(rkey, r, adct, sh)
         voucher = Voucher(0, 0, 0, 0, 0, 0)
         return voucher
 
