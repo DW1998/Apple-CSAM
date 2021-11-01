@@ -1,4 +1,6 @@
+import math
 import os
+import random
 import shutil
 
 import util
@@ -15,11 +17,8 @@ def process_X():
     x = list()
     for img in os.listdir(mal_img_dir):
         if img.endswith(".jpg") or img.endswith(".png"):
-            print(img)
             nh = nnhash.calc_nnhash(mal_img_dir + img)
-            print(nh)
             x.append(nh)
-    print(x)
     x = list(dict.fromkeys(x))
     print(x)
     return x
@@ -34,10 +33,13 @@ class Server:
         self.s = 10
         self.t = 5
         self.x = process_X()
-        self.e_dash = 0.3
-        self.cuckoo = self.create_cuckoo_table()
-        for i in self.x:
-            self.cuckoo_insert(i, 0, 0)
+        self.h1_index = 0
+        self.h2_index = 1
+        self.e_dash = 0.0
+        self.n_dash = int((1 + self.e_dash) * len(self.x))
+        self.check_rehash(0)
+        self.cuckoo = list()
+        self.create_cuckoo_table()
         print(self.cuckoo)
 
     def add_clients(self, client_ids):
@@ -79,32 +81,57 @@ class Server:
     def inc_cur_id(self):
         self.cur_id += 1
 
+    def check_rehash(self, cnt):
+        if cnt == math.factorial(len(util.hash_list)):
+            print("Could not find usable hash functions in %s tries" % cnt)
+            return
+        for i in self.x:
+            h1_x, h2_x = util.calc_h(i, self.n_dash, self.h1_index, self.h2_index)
+            if h1_x == h2_x:
+                print("%s == %s for value %s" % (h1_x, h2_x, i))
+                self.h1_index = random.randint(0, 6)
+                self.h2_index = random.randint(0, 6)
+                while self.h1_index == self.h2_index:
+                    self.h2_index = random.randint(0, 6)
+                self.check_rehash(cnt + 1)
+
     def create_cuckoo_table(self):
-        n_dash = int((1 + self.e_dash) * len(self.x))
-        print(n_dash)
-        cuckoo = dict.fromkeys((range(n_dash)))
-        print(cuckoo)
-        return cuckoo
+        print(self.n_dash)
+        self.cuckoo = dict.fromkeys((range(self.n_dash)))
+        print(self.cuckoo)
+        for i in self.x:
+            h1, h2 = util.calc_h(i, self.n_dash, self.h1_index, self.h2_index)
+            print("x: %s, h1: %s, h2: %s" % (i, h1, h2))
+            self.cuckoo_insert(i, 0, 0)
 
     def cuckoo_insert(self, x, n, cnt):
-        n_dash = len(self.cuckoo)
-        h1 = util.calc_h(x, n_dash, 1)
-        h2 = util.calc_h(x, n_dash, 2)
+        h1_x, h2_x = util.calc_h(x, self.n_dash, self.h1_index, self.h2_index)
         hashes = list()
-        hashes.append(h1)
-        hashes.append(h2)
-        if self.cuckoo[h1] == x or self.cuckoo[h2] == x:
+        hashes.append(h1_x)
+        hashes.append(h2_x)
+        if self.cuckoo[h1_x] == x or self.cuckoo[h2_x] == x:
             return
-        if cnt == n_dash:
+        if cnt == self.n_dash:
             print("Cycle detected, %s discarded" % x)
             return
         if self.cuckoo[hashes[n]] is None:
             self.cuckoo[hashes[n]] = x
+            print("value %s was added with n: %s" % (x, n))
             return
         else:
             old_x = self.cuckoo[hashes[n]]
+            h1_old_x, h2_old_x = util.calc_h(old_x, self.n_dash, self.h1_index, self.h2_index)
             self.cuckoo[hashes[n]] = x
-            self.cuckoo_insert(old_x, 1, cnt + 1)
+            print("value %s was added with n: %s" % (x, n))
+            new_n = 0
+            if n == 0:
+                if h1_old_x == h1_x:
+                    new_n = 1
+            else:
+                if h1_old_x == h2_x:
+                    new_n = 1
+            print("old x %s gets moved to its hash %s" % (old_x, new_n))
+            self.cuckoo_insert(old_x, new_n, cnt + 1)
 
     def receive_voucher(self, client, voucher):
         print("%s received voucher with ID %s from %s" % (self.name, voucher.id, client.id))

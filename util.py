@@ -9,6 +9,14 @@ import hmac
 dhf_l = (2 ** 64) - 59
 sh_p = (2 ** 128) - 1
 test_num = 339177328369128880911409701061729234965
+hash_list = list()
+hash_list.append(hashlib.sha1())
+hash_list.append(hashlib.sha256())
+hash_list.append(hashlib.md5())
+hash_list.append(hashlib.sha3_224())
+hash_list.append(hashlib.sha3_256())
+hash_list.append(hashlib.sha3_384())
+hash_list.append(hashlib.sha3_512())
 
 
 def aes128_enc(adkey, ad):
@@ -103,15 +111,14 @@ def calc_rct(rkey, r, adct, sh):
     return rct
 
 
-def calc_h(u, n, i):
-    h = hashlib.sha256()
-    if i == 1:
-        h = hashlib.sha256()
-    elif i == 2:
-        h = hashlib.sha1()
-    h.update(u.encode())
-    out = int.from_bytes(h.hexdigest().encode(), "big") % n
-    return out
+def calc_h(u, n_dash, h1_i, h2_i):
+    h1 = hash_list[h1_i]
+    h2 = hash_list[h2_i]
+    h1.update(u.encode())
+    h2.update(u.encode())
+    out1 = int.from_bytes(h1.hexdigest().encode(), "big") % n_dash
+    out2 = int.from_bytes(h2.hexdigest().encode(), "big") % n_dash
+    return out1, out2
 
 
 def is_prime(n):
