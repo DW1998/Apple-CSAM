@@ -103,6 +103,17 @@ def calc_rct(rkey, r, adct, sh):
     return rct
 
 
+def calc_h(u, n, i):
+    h = hashlib.sha256()
+    if i == 1:
+        h = hashlib.sha256()
+    elif i == 2:
+        h = hashlib.sha1()
+    h.update(u.encode())
+    out = int.from_bytes(h.hexdigest().encode(), "big") % n
+    return out
+
+
 def is_prime(n):
     for i in range(2, int(n ** 0.5) + 1):
         if n % i == 0:

@@ -31,8 +31,6 @@ class Client:
                 a = int.from_bytes(get_random_bytes(16), "big") % util.dhf_l
                 p.append(a)
             self.hkey.append(p)
-        print(len(self.hkey))
-        print(len(self.hkey[0]))
         print(self.hkey)
         self.adkey = get_random_bytes(16)  # (Enc, Dec), K'
         self.fkey = get_random_bytes(16)  # PRF, K''

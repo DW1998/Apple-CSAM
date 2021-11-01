@@ -1,4 +1,5 @@
 import pickle
+import shutil
 from shutil import copyfile
 
 import nnhash
@@ -41,7 +42,13 @@ class Triple:
 if os.path.isfile("server.pickle"):
     server = load_object("server.pickle")
 else:
-    server = Server("Apple", list())
+    server = Server("Apple")
+    try:
+        shutil.rmtree(clients_dir)
+        os.mkdir(clients_dir, 0o777)
+        print("Deleted contents in folder %s" % clients_dir)
+    except Exception as e:
+        print("Failed to delete %s because of %s" % (clients_dir, e))
 
 file_client_column = [
     [
