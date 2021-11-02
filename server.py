@@ -6,11 +6,17 @@ import shutil
 import util
 from client import Client
 import nnhash
+from Crypto.PublicKey import ECC
 
 # Parent Directory
 parent_dir = "D:/Apple-CSAM-Files/"
 clients_dir = parent_dir + "Clients/"
 mal_img_dir = parent_dir + "Malicious Images/"
+ecc_p = 115792089210356248762697446949407573530086143415290314195533631308867097853951
+ecc_q = 115792089210356248762697446949407573529996955224135760342422259061068512044369
+ecc_gen_x = 0x6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296
+ecc_gen_y = 0x4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5
+ecc_gen = ECC.EccPoint(x=int(ecc_gen_x), y=int(ecc_gen_y), curve='p256')
 
 
 def process_X():
@@ -39,6 +45,14 @@ class Server:
         self.check_rehash(0)
         self.cuckoo = list()
         self.create_cuckoo_table()
+        self.alpha = random.randint(0, ecc_q)
+        print("alpha: %s" % self.alpha)
+        self.L = (self.alpha * ecc_gen).xy
+        print("L.x: %s" % self.L[0])
+        print("L.y: %s" % self.L[1])
+        print("-p-: %s" % ecc_p)
+        self.pdata = self.calc_pdata()
+        print(self.pdata)
 
     def add_clients(self, client_ids):
         for c_id in client_ids:
@@ -124,6 +138,26 @@ class Server:
                 if h1_old_x == h2_x:
                     new_n = 1
             self.cuckoo_insert(old_x, new_n, cnt + 1)
+
+    def calc_pdata(self):
+        pdata = list()
+        L_list = list()
+        L_list.append(int(self.L[0]))
+        L_list.append(int(self.L[1]))
+        pdata.append(L_list)
+        for i in self.cuckoo:
+            print(self.cuckoo[i])
+            if self.cuckoo[i] is None:
+                ran = random.randint(0, ecc_q)
+                P = ran * ecc_gen
+            else:
+                P = self.alpha * util.H(i)
+            P_list = list()
+            P_list.append(int(P.x))
+            P_list.append(int(P.y))
+            print(P_list)
+            pdata.append(P_list)
+        return pdata
 
     def receive_voucher(self, client, voucher):
         print("%s received voucher with ID %s from %s" % (self.name, voucher.id, client.id))

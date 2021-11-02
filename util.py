@@ -3,8 +3,11 @@ import hashlib
 from Crypto.Cipher import AES
 import json
 from base64 import b64encode, b64decode
+
+from Crypto.PublicKey import ECC
 from Crypto.Random import get_random_bytes
 import hmac
+import pem
 
 dhf_l = (2 ** 64) - 59
 sh_p = (2 ** 128) - 1
@@ -17,6 +20,11 @@ hash_list.append(hashlib.sha3_224)
 hash_list.append(hashlib.sha3_256)
 hash_list.append(hashlib.sha3_384)
 hash_list.append(hashlib.sha3_512)
+ecc_p = 115792089210356248762697446949407573530086143415290314195533631308867097853951
+ecc_q = 115792089210356248762697446949407573529996955224135760342422259061068512044369
+ecc_gen_x = 0x6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296
+ecc_gen_y = 0x4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5
+ecc_gen = ECC.EccPoint(x=int(ecc_gen_x), y=int(ecc_gen_y), curve='p256')
 
 
 def aes128_enc(adkey, ad):
@@ -120,8 +128,17 @@ def calc_h(u, n_dash, h1_i, h2_i):
     return out1, out2
 
 
+def gen_ecc():
+    return
+
+
 def is_prime(n):
     for i in range(2, int(n ** 0.5) + 1):
         if n % i == 0:
             return False
         return True
+
+
+def H(i):
+    out = ecc_gen + ecc_gen
+    return out
