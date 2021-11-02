@@ -20,7 +20,6 @@ def process_X():
             nh = nnhash.calc_nnhash(mal_img_dir + img)
             x.append(nh)
     x = list(dict.fromkeys(x))
-    print(x)
     return x
 
 
@@ -35,12 +34,11 @@ class Server:
         self.x = process_X()
         self.h1_index = 0
         self.h2_index = 1
-        self.e_dash = 0.0
+        self.e_dash = 0.3
         self.n_dash = int((1 + self.e_dash) * len(self.x))
         self.check_rehash(0)
         self.cuckoo = list()
         self.create_cuckoo_table()
-        print(self.cuckoo)
 
     def add_clients(self, client_ids):
         for c_id in client_ids:
@@ -88,7 +86,6 @@ class Server:
         for i in self.x:
             h1_x, h2_x = util.calc_h(i, self.n_dash, self.h1_index, self.h2_index)
             if h1_x == h2_x:
-                print("%s == %s for value %s" % (h1_x, h2_x, i))
                 self.h1_index = random.randint(0, 6)
                 self.h2_index = random.randint(0, 6)
                 while self.h1_index == self.h2_index:
@@ -96,13 +93,11 @@ class Server:
                 self.check_rehash(cnt + 1)
 
     def create_cuckoo_table(self):
-        print(self.n_dash)
         self.cuckoo = dict.fromkeys((range(self.n_dash)))
-        print(self.cuckoo)
         for i in self.x:
             h1, h2 = util.calc_h(i, self.n_dash, self.h1_index, self.h2_index)
-            print("x: %s, h1: %s, h2: %s" % (i, h1, h2))
             self.cuckoo_insert(i, 0, 0)
+        print(self.cuckoo)
 
     def cuckoo_insert(self, x, n, cnt):
         h1_x, h2_x = util.calc_h(x, self.n_dash, self.h1_index, self.h2_index)
@@ -116,13 +111,11 @@ class Server:
             return
         if self.cuckoo[hashes[n]] is None:
             self.cuckoo[hashes[n]] = x
-            print("value %s was added with n: %s" % (x, n))
             return
         else:
             old_x = self.cuckoo[hashes[n]]
             h1_old_x, h2_old_x = util.calc_h(old_x, self.n_dash, self.h1_index, self.h2_index)
             self.cuckoo[hashes[n]] = x
-            print("value %s was added with n: %s" % (x, n))
             new_n = 0
             if n == 0:
                 if h1_old_x == h1_x:
@@ -130,7 +123,6 @@ class Server:
             else:
                 if h1_old_x == h2_x:
                     new_n = 1
-            print("old x %s gets moved to its hash %s" % (old_x, new_n))
             self.cuckoo_insert(old_x, new_n, cnt + 1)
 
     def receive_voucher(self, client, voucher):
