@@ -128,17 +128,6 @@ def calc_h(u, n_dash, h1_i, h2_i):
     return out1, out2
 
 
-def gen_ecc():
-    return
-
-
-def is_prime(n):
-    for i in range(2, int(n ** 0.5) + 1):
-        if n % i == 0:
-            return False
-        return True
-
-
-def H(i):
-    out = ecc_gen + ecc_gen
-    return out
+def calc_H(x):
+    h = x * ecc_gen
+    return h

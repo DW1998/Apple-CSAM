@@ -35,6 +35,7 @@ class Client:
         self.adkey = get_random_bytes(16)  # (Enc, Dec), K'
         self.fkey = get_random_bytes(16)  # PRF, K''
         self.a = util.init_sh_poly(self.adkey, server.t)
+        self.pdata = self.validate_pdata()
 
     def show_server(self):
         print(self.server)
@@ -46,6 +47,9 @@ class Client:
         print(triple.ad)
         print("triple " + str(triple.id) + " was added for client " + str(self.id))
         self.send_voucher(triple)
+
+    def validate_pdata(self):
+        return self.server.pdata
 
     def generate_voucher(self, triple):
         adct = util.aes128_enc(self.adkey, triple.ad)

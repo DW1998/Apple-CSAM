@@ -47,12 +47,8 @@ class Server:
         self.create_cuckoo_table()
         self.alpha = random.randint(0, ecc_q)
         print("alpha: %s" % self.alpha)
-        self.L = (self.alpha * ecc_gen).xy
-        print("L.x: %s" % self.L[0])
-        print("L.y: %s" % self.L[1])
-        print("-p-: %s" % ecc_p)
+        self.L = (int((self.alpha * ecc_gen).x), int((self.alpha * ecc_gen).y))
         self.pdata = self.calc_pdata()
-        print(self.pdata)
 
     def add_clients(self, client_ids):
         for c_id in client_ids:
@@ -141,22 +137,17 @@ class Server:
 
     def calc_pdata(self):
         pdata = list()
-        L_list = list()
-        L_list.append(int(self.L[0]))
-        L_list.append(int(self.L[1]))
-        pdata.append(L_list)
+        pdata.append(self.L)
         for i in self.cuckoo:
-            print(self.cuckoo[i])
             if self.cuckoo[i] is None:
                 ran = random.randint(0, ecc_q)
-                P = ran * ecc_gen
+                ecc_P = ran * ecc_gen
             else:
-                P = self.alpha * util.H(i)
-            P_list = list()
-            P_list.append(int(P.x))
-            P_list.append(int(P.y))
-            print(P_list)
-            pdata.append(P_list)
+                x = int.from_bytes(self.cuckoo[i].encode(), "big") % ecc_q
+                ecc_P = self.alpha * util.calc_H(x)
+            P = (int(ecc_P.x), int(ecc_P.y))
+            pdata.append(P)
+        print(pdata)
         return pdata
 
     def receive_voucher(self, client, voucher):
