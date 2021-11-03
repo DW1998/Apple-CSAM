@@ -6,7 +6,6 @@ import shutil
 import util
 from client import Client
 import nnhash
-from Crypto.PublicKey import ECC
 
 # Parent Directory
 parent_dir = "D:/Apple-CSAM-Files/"
@@ -100,7 +99,6 @@ class Server:
     def create_cuckoo_table(self):
         self.cuckoo = dict.fromkeys((range(self.n_dash)))
         for i in self.x:
-            h1, h2 = util.calc_h(i, self.n_dash, self.h1_index, self.h2_index)
             self.cuckoo_insert(i, 0, 0)
         print(self.cuckoo)
 

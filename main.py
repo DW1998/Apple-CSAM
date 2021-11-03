@@ -6,7 +6,6 @@ import nnhash
 import PySimpleGUI as sg
 import os
 
-import util
 from client import Client
 from server import Server
 
@@ -48,8 +47,8 @@ else:
         shutil.rmtree(clients_dir)
         os.mkdir(clients_dir, 0o777)
         print("Deleted contents in folder %s" % clients_dir)
-    except Exception as e:
-        print("Failed to delete %s because of %s" % (clients_dir, e))
+    except Exception as exe:
+        print("Failed to delete %s because of %s" % (clients_dir, exe))
 
 file_client_column = [
     [
