@@ -1,4 +1,5 @@
 import hashlib
+from math import ceil
 
 from Crypto.Cipher import AES
 import json
@@ -133,9 +134,26 @@ def calc_H(x):
     return h
 
 
-def calc_H_dash(x):
-    test_out_H_dash = get_random_bytes(16)
-    return test_out_H_dash
+def hmac_sha256(key, data):
+    return hmac.new(key, data, hashlib.sha256).digest()
+
+
+def calc_H_dash(ikm):
+    salt = b""
+    info = b""
+    ikm_bytes = int(ikm.x).to_bytes(32, "big")
+    length = 16
+    hash_len = 32
+    if len(salt) == 0:
+        salt = bytes([0] * hash_len)
+    prk = hmac_sha256(salt, ikm_bytes)
+    t = b""
+    okm = b""
+    for i in range(ceil(length / hash_len)):
+        t = hmac_sha256(prk, t + info + bytes([1 + i]))
+        okm += t
+    print(okm[:length])
+    return okm[:length]
 
 
 def calc_ct(H_dash_S, rkey):

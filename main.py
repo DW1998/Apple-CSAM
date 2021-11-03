@@ -6,6 +6,7 @@ import nnhash
 import PySimpleGUI as sg
 import os
 
+import util
 from client import Client
 from server import Server
 
