@@ -134,8 +134,8 @@ def calc_H(x):
 
 
 def calc_H_dash(x):
-    out = get_random_bytes(16)
-    return out
+    test_out_H_dash = get_random_bytes(16)
+    return test_out_H_dash
 
 
 def calc_ct(H_dash_S, rkey):
