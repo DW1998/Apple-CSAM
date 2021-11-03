@@ -1,8 +1,10 @@
 import json
+import random
 
 from Crypto.Random import get_random_bytes
 
 import util
+from Crypto.PublicKey import ECC
 
 # Parent Directory
 parent_dir = "D:/Apple-CSAM-Files/"
@@ -63,8 +65,32 @@ class Client:
         sh = json.dumps(dict(zip(json_k, json_v)))
         rkey = get_random_bytes(16)
         rct = util.calc_rct(rkey, r, adct, sh)
-        print(rct)
-        voucher = Voucher(0, 0, 0, 0, 0, 0)
+        w1, w2 = util.calc_h(triple.y, self.server.n_dash, self.server.h1_index, self.server.h2_index)
+        L = ECC.EccPoint(x=self.pdata[0][0], y=self.pdata[0][1], curve='p256')
+        beta1 = random.randint(0, util.ecc_q)
+        gamma1 = random.randint(0, util.ecc_q)
+        Q1 = beta1 * util.calc_H(triple.y) + gamma1 * util.ecc_gen
+        P_w1 = ECC.EccPoint(x=self.pdata[w1 + 1][0], y=self.pdata[w1 + 1][1], curve='p256')
+        S1 = beta1 * P_w1 + gamma1 * L
+        H_dash_S1 = util.calc_H_dash(S1)
+        ct1 = util.calc_ct(H_dash_S1, rkey)
+        beta2 = random.randint(0, util.ecc_q)
+        gamma2 = random.randint(0, util.ecc_q)
+        Q2 = beta2 * util.calc_H(triple.y) + gamma2 * util.ecc_gen
+        P_w2 = ECC.EccPoint(x=self.pdata[w2 + 1][0], y=self.pdata[w2 + 1][1], curve='p256')
+        S2 = beta2 * P_w2 + gamma2 * L
+        H_dash_S2 = util.calc_H_dash(S2)
+        ct2 = util.calc_ct(H_dash_S2, rkey)
+        if random.randint(1, 2) == 1:
+            voucher = Voucher(triple.id, Q1, ct1, Q2, ct2, rct)
+        else:
+            voucher = Voucher(triple.id, Q2, ct2, Q1, ct1, rct)
+        print("voucher id: %s" % voucher.id)
+        print("voucher Q1: %s" % voucher.Q1)
+        print("voucher ct1: %s" % voucher.ct1)
+        print("voucher Q2: %s" % voucher.Q2)
+        print("voucher ct2: %s" % voucher.ct2)
+        print("voucher rct: %s" % voucher.rct)
         return voucher
 
     def send_voucher(self, triple):

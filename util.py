@@ -7,7 +7,6 @@ from base64 import b64encode, b64decode
 from Crypto.PublicKey import ECC
 from Crypto.Random import get_random_bytes
 import hmac
-import pem
 
 dhf_l = (2 ** 64) - 59
 sh_p = (2 ** 128) - 1
@@ -129,5 +128,16 @@ def calc_h(u, n_dash, h1_i, h2_i):
 
 
 def calc_H(x):
-    h = x * ecc_gen
+    int_x = int.from_bytes(x.encode(), "big") % ecc_q
+    h = int_x * ecc_gen
     return h
+
+
+def calc_H_dash(x):
+    out = get_random_bytes(16)
+    return out
+
+
+def calc_ct(H_dash_S, rkey):
+    ct = aes128_enc(H_dash_S, rkey)
+    return ct

@@ -12,11 +12,6 @@ from Crypto.PublicKey import ECC
 parent_dir = "D:/Apple-CSAM-Files/"
 clients_dir = parent_dir + "Clients/"
 mal_img_dir = parent_dir + "Malicious Images/"
-ecc_p = 115792089210356248762697446949407573530086143415290314195533631308867097853951
-ecc_q = 115792089210356248762697446949407573529996955224135760342422259061068512044369
-ecc_gen_x = 0x6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296
-ecc_gen_y = 0x4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5
-ecc_gen = ECC.EccPoint(x=int(ecc_gen_x), y=int(ecc_gen_y), curve='p256')
 
 
 def process_X():
@@ -45,9 +40,9 @@ class Server:
         self.check_rehash(0)
         self.cuckoo = list()
         self.create_cuckoo_table()
-        self.alpha = random.randint(0, ecc_q)
+        self.alpha = random.randint(0, util.ecc_q)
         print("alpha: %s" % self.alpha)
-        self.L = (int((self.alpha * ecc_gen).x), int((self.alpha * ecc_gen).y))
+        self.L = (int((self.alpha * util.ecc_gen).x), int((self.alpha * util.ecc_gen).y))
         self.pdata = self.calc_pdata()
 
     def add_clients(self, client_ids):
@@ -140,11 +135,10 @@ class Server:
         pdata.append(self.L)
         for i in self.cuckoo:
             if self.cuckoo[i] is None:
-                ran = random.randint(0, ecc_q)
-                ecc_P = ran * ecc_gen
+                ran = random.randint(0, util.ecc_q)
+                ecc_P = ran * util.ecc_gen
             else:
-                x = int.from_bytes(self.cuckoo[i].encode(), "big") % ecc_q
-                ecc_P = self.alpha * util.calc_H(x)
+                ecc_P = self.alpha * util.calc_H(self.cuckoo[i])
             P = (int(ecc_P.x), int(ecc_P.y))
             pdata.append(P)
         print(pdata)
