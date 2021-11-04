@@ -3,8 +3,9 @@ import os
 import random
 import shutil
 
+from Crypto.PublicKey import ECC
+
 import util
-from client import Client
 import nnhash
 
 # Parent Directory
@@ -28,6 +29,7 @@ class Server:
         self.name = name
         self.client_list = list()
         self.client_id_list = list()
+        self.client_voucher_list = list()
         self.cur_id = 0
         self.s = 10
         self.t = 5
@@ -44,14 +46,11 @@ class Server:
         self.L = (int((self.alpha * util.ecc_gen).x), int((self.alpha * util.ecc_gen).y))
         self.pdata = self.calc_pdata()
 
-    def add_clients(self, client_ids):
-        for c_id in client_ids:
-            self.add_client(Client(c_id, self))
-
     def add_client(self, client):
         if client.id not in self.client_id_list:
             self.client_list.append(client)
             self.client_id_list.append(client.id)
+            self.client_voucher_list.append(list())
             print("client " + str(client.id) + " was added")
             path = os.path.join(clients_dir, client.id)
             try:
@@ -67,6 +66,7 @@ class Server:
             index = self.client_id_list.index(client_id)
             self.client_list.pop(index)
             self.client_id_list.pop(index)
+            self.client_voucher_list.pop(index)
             print("client " + str(client_id) + " was deleted")
             path = os.path.join(clients_dir, client_id)
             try:
@@ -143,4 +143,32 @@ class Server:
         return pdata
 
     def receive_voucher(self, client, voucher):
+        index = self.client_id_list.index(client.id)
+        self.client_voucher_list[index].append(voucher)
         print("%s received voucher with ID %s from %s" % (self.name, voucher.id, client.id))
+
+    def process_vouchers(self):
+        print("processing vouchers")
+        for cl in self.client_voucher_list:
+            SHARES = list()
+            IDLIST = list()
+            for v in cl:
+                IDLIST.append(v.id)
+                Q1 = ECC.EccPoint(x=v.Q1[0], y=v.Q1[1], curve='p256')
+                Q2 = ECC.EccPoint(x=v.Q2[0], y=v.Q2[1], curve='p256')
+                S1 = self.alpha * Q1
+                S2 = self.alpha * Q2
+                rkey1 = util.aes128_dec(util.calc_H_dash(S1), v.ct1)
+                rkey2 = util.aes128_dec(util.calc_H_dash(S2), v.ct2)
+                print(rkey1)
+                print(rkey2)
+                rct_dec = None
+                if rkey1 is None and rkey2 is None:
+                    print("voucher does not match")
+                elif rkey1 is not None and rkey2 is not None:
+                    print("invalid voucher")
+                elif rkey1 is not None:
+                    rct_dec = util.aes128_dec(rkey1, v.rct)
+                else:
+                    rct_dec = util.aes128_dec(rkey2, v.rct)
+                print(rct_dec)

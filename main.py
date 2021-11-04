@@ -69,7 +69,8 @@ file_list_column = [
         sg.Text("Image Folder"),
         sg.In(size=(22, 1), enable_events=True, key="-FOLDER-"),
         sg.FolderBrowse(),
-        sg.Button("Upload")
+        sg.Button("Upload"),
+        sg.Button("Process Vouchers")
     ],
     [
         sg.Listbox(
@@ -160,6 +161,8 @@ while True:
             server.inc_cur_id()
             index = server.client_id_list.index(values["-CLIENT LIST-"][0])
             server.client_list[index].add_triple(triple)
+    elif event == "Process Vouchers":
+        server.process_vouchers()
 
 window.close()
 
