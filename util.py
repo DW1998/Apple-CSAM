@@ -10,8 +10,8 @@ from Crypto.Random import get_random_bytes
 import hmac
 
 dhf_l = (2 ** 64) - 59
-sh_p = (2 ** 128) - 1
-test_num = 339177328369128880911409701061729234965
+# sh_p = (2 ** 128) - 1
+sh_p = 340282366920938463463374607431768211297
 hash_list = list()
 hash_list.append(hashlib.sha1)
 hash_list.append(hashlib.sha256)
@@ -159,3 +159,27 @@ def calc_H_dash(ikm):
 def calc_ct(H_dash_S, rkey):
     ct = aes128_enc(H_dash_S, rkey)
     return ct
+
+
+def is_prime(n):
+    for i in range(2, int(n ** 0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+
+def recon_adkey(shares):
+    values = list()
+    for s in shares:
+        sh = json.loads(s)
+        values.append((sh['x'], sh['z']))
+    adkey = 0
+    for v in values:
+        temp = 1
+        for other in values:
+            if v is not other:
+                temp = temp * (0 - other[0] * pow(v[0] - other[0], -1, sh_p)) % sh_p
+        temp = temp * v[1] % sh_p
+        adkey = (adkey + temp) % sh_p
+    print("adkey: %s" % adkey)
+    return adkey

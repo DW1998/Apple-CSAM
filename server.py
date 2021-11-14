@@ -1,7 +1,9 @@
+import json
 import math
 import os
 import random
 import shutil
+from base64 import b64decode
 
 from Crypto.PublicKey import ECC
 
@@ -32,7 +34,7 @@ class Server:
         self.client_voucher_list = list()
         self.cur_id = 0
         self.s = 10
-        self.t = 5
+        self.t = 2
         self.x = process_X()
         self.h1_index = 0
         self.h2_index = 1
@@ -150,9 +152,11 @@ class Server:
     def process_vouchers(self):
         print("processing vouchers")
         for cl in self.client_voucher_list:
+            # step 0
             SHARES = list()
             IDLIST = list()
             for v in cl:
+                # step 1
                 IDLIST.append(v.id)
                 Q1 = ECC.EccPoint(x=v.Q1[0], y=v.Q1[1], curve='p256')
                 Q2 = ECC.EccPoint(x=v.Q2[0], y=v.Q2[1], curve='p256')
@@ -170,3 +174,24 @@ class Server:
                 else:
                     rct_dec = util.aes128_dec(rkey2, v.rct)
                 print(rct_dec)
+                if rct_dec is not None:
+                    rct = json.loads(rct_dec)
+                    r = rct['r']
+                    adct = rct['adct']
+                    sh = rct['sh']
+                    SHARES.append((v.id, r, adct, sh))
+            print(SHARES)
+            # step 2
+            dist_sh = list()
+            for s in SHARES:
+                dist_sh.append(s[3])
+            dist_sh = list(dict.fromkeys(dist_sh))
+            t_dash = len(dist_sh)
+            print(t_dash)
+            if t_dash <= self.t:
+                OUTSET = ([x[0] for x in SHARES])
+            else:
+                adkey = util.recon_adkey(dist_sh[0:self.t + 1])
+                print(adkey)
+                OUTSET = list()
+            print(OUTSET)

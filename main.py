@@ -6,6 +6,7 @@ import nnhash
 import PySimpleGUI as sg
 import os
 
+import util
 from client import Client
 from server import Server
 
@@ -49,6 +50,10 @@ else:
         print("Deleted contents in folder %s" % clients_dir)
     except Exception as exe:
         print("Failed to delete %s because of %s" % (clients_dir, exe))
+
+for cl in server.client_list:
+    print(cl.adkey)
+    print(int.from_bytes(cl.adkey, "big"))
 
 file_client_column = [
     [
