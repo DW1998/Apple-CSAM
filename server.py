@@ -14,6 +14,7 @@ import nnhash
 parent_dir = "D:/Apple-CSAM-Files/"
 clients_dir = parent_dir + "Clients/"
 mal_img_dir = parent_dir + "Malicious Images/"
+dec_img_dir = parent_dir + "Decrypted Images/"
 
 
 def process_X():
@@ -34,7 +35,7 @@ class Server:
         self.client_voucher_list = list()
         self.cur_id = 0
         self.s = 10
-        self.t = 2
+        self.t = 3
         self.x = process_X()
         self.h1_index = 0
         self.h2_index = 1
@@ -70,10 +71,16 @@ class Server:
             self.client_id_list.pop(index)
             self.client_voucher_list.pop(index)
             print("client " + str(client_id) + " was deleted")
-            path = os.path.join(clients_dir, client_id)
+            path_clients_dir = os.path.join(clients_dir, client_id)
+            path_dec_img_dir = os.path.join(dec_img_dir, client_id)
             try:
-                shutil.rmtree(path)
-                print("deleted dir: " + path)
+                shutil.rmtree(path_clients_dir)
+                print("deleted dir: " + path_clients_dir)
+            except OSError:
+                pass
+            try:
+                shutil.rmtree(path_dec_img_dir)
+                print("deleted dir: " + path_dec_img_dir)
             except OSError:
                 pass
         else:
@@ -151,7 +158,11 @@ class Server:
 
     def process_vouchers(self):
         print("processing vouchers")
+        index = -1
+        IDLIST_GLOBAL = list()
+        OUTSET_GLOBAL = list()
         for cl in self.client_voucher_list:
+            index = index + 1
             # step 0
             SHARES = list()
             IDLIST = list()
@@ -173,25 +184,34 @@ class Server:
                     rct_dec = util.aes128_dec(rkey1, v.rct)
                 else:
                     rct_dec = util.aes128_dec(rkey2, v.rct)
-                print(rct_dec)
                 if rct_dec is not None:
                     rct = json.loads(rct_dec)
                     r = rct['r']
                     adct = rct['adct']
                     sh = rct['sh']
                     SHARES.append((v.id, r, adct, sh))
-            print(SHARES)
             # step 2
             dist_sh = list()
             for s in SHARES:
                 dist_sh.append(s[3])
             dist_sh = list(dict.fromkeys(dist_sh))
             t_dash = len(dist_sh)
-            print(t_dash)
             if t_dash <= self.t:
                 OUTSET = ([x[0] for x in SHARES])
+                print("Not enough shares")
             else:
-                adkey = util.recon_adkey(dist_sh[0:self.t + 1])
-                print(adkey)
+                adkey_int = util.recon_adkey(dist_sh[0:self.t + 1])
+                adkey = int.to_bytes(adkey_int, 16, "big")
                 OUTSET = list()
-            print(OUTSET)
+                for s in SHARES:
+                    ad = util.aes128_dec(adkey, s[2])
+                    if ad is not None:
+                        OUTSET.append((s[0], ad))
+                path = dec_img_dir + self.client_id_list[index] + "/"
+                if not os.path.exists(path):
+                    os.mkdir(path, 0o777)
+                    print("Created Dir: %s" % path)
+                for t in OUTSET:
+                    util.dec_image(t, path)
+            IDLIST_GLOBAL.append(IDLIST)
+            OUTSET_GLOBAL.append(OUTSET)

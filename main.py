@@ -13,6 +13,7 @@ from server import Server
 # Parent Directory
 parent_dir = "D:/Apple-CSAM-Files/"
 clients_dir = parent_dir + "Clients/"
+dec_img_dir = parent_dir + "Decrypted Images/"
 client_id_file = "Client_IDs.csv"
 
 
@@ -50,10 +51,12 @@ else:
         print("Deleted contents in folder %s" % clients_dir)
     except Exception as exe:
         print("Failed to delete %s because of %s" % (clients_dir, exe))
-
-for cl in server.client_list:
-    print(cl.adkey)
-    print(int.from_bytes(cl.adkey, "big"))
+    try:
+        shutil.rmtree(dec_img_dir)
+        os.mkdir(dec_img_dir, 0o777)
+        print("Deleted contents in folder %s" % dec_img_dir)
+    except Exception as exe:
+        print("Failed to delete %s because of %s" % (dec_img_dir, exe))
 
 file_client_column = [
     [

@@ -37,7 +37,6 @@ def aes128_enc(adkey, ad):
     json_k = ['nonce', 'header', 'ciphertext', 'tag']
     json_v = [b64encode(x).decode('utf-8') for x in [cipher.nonce, header, ciphertext, tag]]
     adct = json.dumps(dict(zip(json_k, json_v)))
-    print("adct is: %s" % adct)
     return adct
 
 
@@ -49,7 +48,6 @@ def aes128_dec(adkey, adct):
         cipher = AES.new(adkey, AES.MODE_GCM, nonce=jv['nonce'])
         cipher.update(jv['header'])
         ad = cipher.decrypt_and_verify(jv['ciphertext'], jv['tag'])
-        print("ad is: %s" % ad)
     except (ValueError, KeyError):
         print("Incorrect decryption")
         return None
@@ -152,7 +150,6 @@ def calc_H_dash(ikm):
     for i in range(ceil(length / hash_len)):
         t = hmac_sha256(prk, t + info + bytes([1 + i]))
         okm += t
-    print(okm[:length])
     return okm[:length]
 
 
@@ -181,5 +178,10 @@ def recon_adkey(shares):
                 temp = temp * (0 - other[0] * pow(v[0] - other[0], -1, sh_p)) % sh_p
         temp = temp * v[1] % sh_p
         adkey = (adkey + temp) % sh_p
-    print("adkey: %s" % adkey)
     return adkey
+
+
+def dec_image(tup, path):
+    f = open(path + str(tup[0]) + ".png", 'wb')
+    f.write(tup[1])
+    f.close()

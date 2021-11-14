@@ -44,9 +44,6 @@ class Client:
 
     def add_triple(self, triple):
         self.triples.append(triple)
-        print(triple.y)
-        print(triple.id)
-        print(triple.ad)
         print("triple " + str(triple.id) + " was added for client " + str(self.id))
         self.send_voucher(triple)
 
@@ -55,8 +52,6 @@ class Client:
 
     def generate_voucher(self, triple):
         adct = util.aes128_enc(self.adkey, triple.ad)
-        # path = clients_dir + "/" + str(self.id) + "/" + str(triple.id) + ".png"
-        # self.dec_image(path, adct)
         prf_sh_x, prf_sh_z, prf_x, prf_r = util.calc_prf(self.fkey, triple.id, self.server.s)
         r = util.calc_dhf(self.hkey, prf_x)
         sh_z = util.calc_poly(prf_sh_x, self.a)
@@ -98,9 +93,3 @@ class Client:
     def send_voucher(self, triple):
         voucher = self.generate_voucher(triple)
         self.server.receive_voucher(self, voucher)
-
-    def dec_image(self, path, adct):
-        img_as_byte = util.aes128_dec(self.adkey, adct)
-        f = open(path, 'wb')
-        f.write(img_as_byte)
-        f.close()
