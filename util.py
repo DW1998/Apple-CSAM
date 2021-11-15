@@ -8,6 +8,9 @@ from base64 import b64encode, b64decode
 from Crypto.PublicKey import ECC
 from Crypto.Random import get_random_bytes
 import hmac
+import numpy as np
+from sympy import Matrix
+import sage
 
 dhf_l = (2 ** 64) - 59
 sh_p = 340282366920938463463374607431768211297
@@ -93,7 +96,6 @@ def init_sh_poly(adkey, t):
     a.append(int.from_bytes(adkey, "big"))
     for i in range(1, t + 1):
         a.append(int.from_bytes(get_random_bytes(16), "big") - 1)
-    print(a)
     return a
 
 
@@ -174,8 +176,8 @@ def recon_adkey(shares):
         temp = 1
         for other in values:
             if v is not other:
-                temp = temp * (0 - other[0] * pow(v[0] - other[0], -1, sh_p)) % sh_p
-        temp = temp * v[1] % sh_p
+                temp = (temp * (0 - other[0] * pow(v[0] - other[0], -1, sh_p))) % sh_p
+        temp = (temp * v[1]) % sh_p
         adkey = (adkey + temp) % sh_p
     return adkey
 
@@ -204,4 +206,20 @@ def det_alg(RLIST, t):
         r_expanded.append(r_dash)
     for r in r_expanded:
         print(len(r))
+    print(r_expanded)
+    M = Matrix(np.array(r_expanded).transpose().tolist())
+    print(M)
+    test_list = [[1, 2, 4], [1, 1, 2], [1, 1, 2]]
+    test_matrix = Matrix(test_list)
+    kernel_M = M.nullspace()
+    # kernel_M = Matrix(r_expanded).nullspace()
+    print("kernel")
+    print(kernel_M)
+    print(test_matrix.echelon_form())
     return indices
+
+
+
+
+
+

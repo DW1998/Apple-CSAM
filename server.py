@@ -34,7 +34,7 @@ class Server:
         self.client_id_list = list()
         self.client_voucher_list = list()
         self.cur_id = 0
-        self.s = 10
+        self.s = 3
         self.t = 3
         self.x = process_X()
         self.h1_index = 0
