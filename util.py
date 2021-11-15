@@ -167,7 +167,7 @@ def is_prime(n):
 def recon_adkey(shares):
     values = list()
     for s in shares:
-        sh = json.loads(s)
+        sh = json.loads(s[3])
         values.append((sh['x'], sh['z']))
     adkey = 0
     for v in values:
@@ -184,3 +184,24 @@ def dec_image(tup, path):
     f = open(path + str(tup[0]) + ".png", 'wb')
     f.write(tup[1])
     f.close()
+
+
+def det_alg(RLIST, t):
+    print(len(RLIST))
+    for r in RLIST:
+        print(len(r))
+    # indices = list()
+    indices = [0, 1, 2, 3]
+    # step 1
+    r_expanded = list()
+    for r in RLIST:
+        r_dash = list()
+        for i in range(0, t):
+            val = r[0] ** i % dhf_l
+            r_dash.append(val)
+        for i in range(1, len(r)):
+            r_dash.append(r[i])
+        r_expanded.append(r_dash)
+    for r in r_expanded:
+        print(len(r))
+    return indices

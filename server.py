@@ -161,11 +161,13 @@ class Server:
         index = -1
         IDLIST_GLOBAL = list()
         OUTSET_GLOBAL = list()
+        S_GLOBAL = list()
         for cl in self.client_voucher_list:
             index = index + 1
             # step 0
             SHARES = list()
             IDLIST = list()
+            S = list()
             for v in cl:
                 # step 1
                 IDLIST.append(v.id)
@@ -200,7 +202,18 @@ class Server:
                 OUTSET = ([x[0] for x in SHARES])
                 print("Not enough shares")
             else:
-                adkey_int = util.recon_adkey(dist_sh[0:self.t + 1])
+                RLIST = list()
+                for s in SHARES:
+                    RLIST.append(s[1])
+                indices = util.det_alg(RLIST, self.t)
+                if indices is None:
+                    continue
+                RLIST_T = [RLIST[i] for i in indices]
+                SHARES_dash = list()
+                for s in SHARES:
+                    if s[1] in RLIST_T:
+                        SHARES_dash.append(s)
+                adkey_int = util.recon_adkey(SHARES_dash[0:self.t + 1])
                 adkey = int.to_bytes(adkey_int, 16, "big")
                 OUTSET = list()
                 for s in SHARES:
@@ -213,5 +226,10 @@ class Server:
                     print("Created Dir: %s" % path)
                 for t in OUTSET:
                     util.dec_image(t, path)
+                temp = [s[0] for s in SHARES_dash]
+                for s in SHARES:
+                    if s[0] not in temp:
+                        S.append(s[0])
+            S_GLOBAL.append(S)
             IDLIST_GLOBAL.append(IDLIST)
             OUTSET_GLOBAL.append(OUTSET)
