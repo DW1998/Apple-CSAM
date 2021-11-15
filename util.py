@@ -10,7 +10,6 @@ from Crypto.Random import get_random_bytes
 import hmac
 
 dhf_l = (2 ** 64) - 59
-# sh_p = (2 ** 128) - 1
 sh_p = 340282366920938463463374607431768211297
 hash_list = list()
 hash_list.append(hashlib.sha1)

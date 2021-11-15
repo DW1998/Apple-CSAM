@@ -13,7 +13,7 @@ from server import Server
 # Parent Directory
 parent_dir = "D:/Apple-CSAM-Files/"
 clients_dir = parent_dir + "Clients/"
-dec_img_dir = parent_dir + "Decrypted Images/"
+dec_img_dir = parent_dir + "Decrypted-Images/"
 client_id_file = "Client_IDs.csv"
 
 
@@ -78,7 +78,8 @@ file_list_column = [
         sg.In(size=(22, 1), enable_events=True, key="-FOLDER-"),
         sg.FolderBrowse(),
         sg.Button("Upload"),
-        sg.Button("Process Vouchers")
+        sg.Button("Process Vouchers"),
+        sg.Button("Send Synthetic Voucher")
     ],
     [
         sg.Listbox(
@@ -171,6 +172,14 @@ while True:
             server.client_list[index].add_triple(triple)
     elif event == "Process Vouchers":
         server.process_vouchers()
+    elif event == "Send Synthetic Voucher":
+        if len(values["-CLIENT LIST-"]) == 0:
+            print("need to select client")
+        else:
+            triple = Triple(None, server.cur_id, None)
+            server.inc_cur_id()
+            index = server.client_id_list.index(values["-CLIENT LIST-"][0])
+            server.client_list[index].add_triple(triple)
 
 window.close()
 

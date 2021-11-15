@@ -13,8 +13,8 @@ import nnhash
 # Parent Directory
 parent_dir = "D:/Apple-CSAM-Files/"
 clients_dir = parent_dir + "Clients/"
-mal_img_dir = parent_dir + "Malicious Images/"
-dec_img_dir = parent_dir + "Decrypted Images/"
+mal_img_dir = parent_dir + "Malicious-Images/"
+dec_img_dir = parent_dir + "Decrypted-Images/"
 
 
 def process_X():
