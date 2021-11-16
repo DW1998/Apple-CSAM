@@ -1,3 +1,4 @@
+import fractions
 import hashlib
 from math import ceil
 
@@ -9,8 +10,7 @@ from Crypto.PublicKey import ECC
 from Crypto.Random import get_random_bytes
 import hmac
 import numpy as np
-from sympy import Matrix
-import sage
+from sympy import Matrix, pprint
 
 dhf_l = (2 ** 64) - 59
 sh_p = 340282366920938463463374607431768211297
@@ -51,7 +51,6 @@ def aes128_dec(adkey, adct):
         cipher.update(jv['header'])
         ad = cipher.decrypt_and_verify(jv['ciphertext'], jv['tag'])
     except (ValueError, KeyError):
-        print("Incorrect decryption")
         return None
     return ad
 
@@ -59,24 +58,15 @@ def aes128_dec(adkey, adct):
 def calc_prf(fkey, id, s):
     # x, z, x', r' el_of F^2_sh * X * R, X is domain of DHF, R is range of DHF
     h = hmac.new(fkey, bytes(id), hashlib.sha1).hexdigest()
-    print("h: %s, length of h: %s" % (h, len(h)))
-    print("h as int: %s, length of h as int: %s" % (int.from_bytes(h.encode(), "big"),
-                                                    len(str(int.from_bytes(h.encode(), "big")))))
-    print("sh_p: %s, length of sh_p: %s" % (sh_p, len(str(sh_p))))
-    print("dhf_l: %s, length of dhl_l %s" % (dhf_l, len(str(dhf_l))))
     sh_x = int.from_bytes(h.encode(), "big") % sh_p
-    print("sh_x: %s" % sh_x)
     h = hmac.new(fkey, h.encode(), hashlib.sha1).hexdigest()
     sh_z = int.from_bytes(h.encode(), "big") % sh_p
-    print("sh_z: %s" % sh_z)
     h = hmac.new(fkey, h.encode(), hashlib.sha1).hexdigest()
     x = int.from_bytes(h.encode(), "big") % dhf_l
-    print("x: %s" % x)
     r = list()
     for i in range(0, s + 1):
         h = hmac.new(fkey, h.encode(), hashlib.sha1).hexdigest()
         r.append(int.from_bytes(h.encode(), "big") % dhf_l)
-    print("prf r: %s" % r)
     return sh_x, sh_z, x, r
 
 
@@ -189,11 +179,6 @@ def dec_image(tup, path):
 
 
 def det_alg(RLIST, t):
-    print(len(RLIST))
-    for r in RLIST:
-        print(len(r))
-    # indices = list()
-    indices = [0, 1, 2, 3]
     # step 1
     r_expanded = list()
     for r in RLIST:
@@ -204,20 +189,9 @@ def det_alg(RLIST, t):
         for i in range(1, len(r)):
             r_dash.append(r[i])
         r_expanded.append(r_dash)
-    for r in r_expanded:
-        print(len(r))
-    print(r_expanded)
-    M = Matrix(np.array(r_expanded).transpose().tolist())
-    print(M)
-    test_list = [[1, 2, 4], [1, 1, 2], [1, 1, 2]]
-    test_matrix = Matrix(test_list)
-    kernel_M = M.nullspace()
-    # kernel_M = Matrix(r_expanded).nullspace()
-    print("kernel")
-    print(kernel_M)
-    print(test_matrix.echelon_form())
+    # While det_alg does not work
+    indices = [x for x in range(0, t + 1)]
     return indices
-
 
 
 

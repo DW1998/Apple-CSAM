@@ -34,12 +34,12 @@ class Server:
         self.client_id_list = list()
         self.client_voucher_list = list()
         self.cur_id = 0
-        self.s = 3
-        self.t = 3
+        self.s = 5
+        self.t = 5
         self.x = process_X()
         self.h1_index = 0
         self.h2_index = 1
-        self.e_dash = 0.3
+        self.e_dash = 0.5
         self.n_dash = int((1 + self.e_dash) * len(self.x))
         self.check_rehash(0)
         self.cuckoo = list()
