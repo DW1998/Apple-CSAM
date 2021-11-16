@@ -167,11 +167,10 @@ class Server:
                 S2 = self.alpha * Q2
                 rkey1 = util.aes128_dec(util.calc_H_dash(S1), v.ct1)
                 rkey2 = util.aes128_dec(util.calc_H_dash(S2), v.ct2)
-                rct_dec = None
                 if rkey1 is None and rkey2 is None:
-                    print("voucher does not match")
+                    continue
                 elif rkey1 is not None and rkey2 is not None:
-                    print("invalid voucher")
+                    continue
                 elif rkey1 is not None:
                     rct_dec = util.aes128_dec(rkey1, v.rct)
                 else:
