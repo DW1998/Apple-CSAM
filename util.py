@@ -1,16 +1,19 @@
-import fractions
 import hashlib
-from math import ceil
-
-from Crypto.Cipher import AES
 import json
-from base64 import b64encode, b64decode
+import hmac
 
+from base64 import b64encode, b64decode
+from Crypto.Cipher import AES
 from Crypto.PublicKey import ECC
 from Crypto.Random import get_random_bytes
-import hmac
-import numpy as np
-from sympy import Matrix, pprint
+from math import ceil
+
+# Parent Directory (change this for different saving folder)
+parent_dir = "D:/Apple-CSAM-Files/"
+clients_dir = parent_dir + "Clients/"
+mal_img_dir = parent_dir + "Malicious-Images/"
+dec_img_dir = parent_dir + "Decrypted-Images/"
+client_id_file = "Client_IDs.csv"
 
 dhf_l = (2 ** 64) - 59
 sh_p = 340282366920938463463374607431768211297
@@ -77,7 +80,6 @@ def calc_dhf(hkey, x):
     r.append(x)
     for p in hkey:
         r.append(calc_poly(x, p) % dhf_l)
-    print("dhf r: %s" % r)
     return r
 
 
@@ -100,11 +102,8 @@ def calc_rct(rkey, r, adct, sh):
     json_k = ['r', 'adct', 'sh']
     json_v = [r, adct, sh]
     rct_data = json.dumps(dict(zip(json_k, json_v))).encode()
-    print("rct_data is: %s" % rct_data)
     rct = aes128_enc(rkey, rct_data)
-    print("rct is: %s" % rct)
     rct_dec = aes128_dec(rkey, rct)
-    print("rct_dec is: %s" % rct_dec)
     return rct
 
 
@@ -192,8 +191,3 @@ def det_alg(RLIST, t):
     # While det_alg does not work
     indices = [x for x in range(0, t + 1)]
     return indices
-
-
-
-
-

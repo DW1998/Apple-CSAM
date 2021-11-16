@@ -3,25 +3,17 @@ import math
 import os
 import random
 import shutil
-from base64 import b64decode
-
-from Crypto.PublicKey import ECC
-
 import util
 import nnhash
 
-# Parent Directory
-parent_dir = "D:/Apple-CSAM-Files/"
-clients_dir = parent_dir + "Clients/"
-mal_img_dir = parent_dir + "Malicious-Images/"
-dec_img_dir = parent_dir + "Decrypted-Images/"
+from Crypto.PublicKey import ECC
 
 
 def process_X():
     x = list()
-    for img in os.listdir(mal_img_dir):
-        if img.endswith(".jpg") or img.endswith(".png"):
-            nh = nnhash.calc_nnhash(mal_img_dir + img)
+    for img in os.listdir(util.mal_img_dir):
+        if img.endswith(".jpg") or img.endswith(".png") or img.endswith(".jpeg"):
+            nh = nnhash.calc_nnhash(util.mal_img_dir + img)
             x.append(nh)
     x = list(dict.fromkeys(x))
     return x
@@ -34,8 +26,8 @@ class Server:
         self.client_id_list = list()
         self.client_voucher_list = list()
         self.cur_id = 0
-        self.s = 5
-        self.t = 5
+        self.s = 3
+        self.t = 3
         self.x = process_X()
         self.h1_index = 0
         self.h2_index = 1
@@ -55,7 +47,7 @@ class Server:
             self.client_id_list.append(client.id)
             self.client_voucher_list.append(list())
             print("client " + str(client.id) + " was added")
-            path = os.path.join(clients_dir, client.id)
+            path = os.path.join(util.clients_dir, client.id)
             try:
                 os.mkdir(path, 0o777)
                 print("added dir: " + path)
@@ -71,8 +63,8 @@ class Server:
             self.client_id_list.pop(index)
             self.client_voucher_list.pop(index)
             print("client " + str(client_id) + " was deleted")
-            path_clients_dir = os.path.join(clients_dir, client_id)
-            path_dec_img_dir = os.path.join(dec_img_dir, client_id)
+            path_clients_dir = os.path.join(util.clients_dir, client_id)
+            path_dec_img_dir = os.path.join(util.dec_img_dir, client_id)
             try:
                 shutil.rmtree(path_clients_dir)
                 print("deleted dir: " + path_clients_dir)
@@ -109,7 +101,6 @@ class Server:
         self.cuckoo = dict.fromkeys((range(self.n_dash)))
         for i in self.x:
             self.cuckoo_insert(i, 0, 0)
-        print(self.cuckoo)
 
     def cuckoo_insert(self, x, n, cnt):
         h1_x, h2_x = util.calc_h(x, self.n_dash, self.h1_index, self.h2_index)
@@ -148,7 +139,6 @@ class Server:
                 ecc_P = self.alpha * util.calc_H(self.cuckoo[i])
             P = (int(ecc_P.x), int(ecc_P.y))
             pdata.append(P)
-        print(pdata)
         return pdata
 
     def receive_voucher(self, client, voucher):
@@ -220,7 +210,7 @@ class Server:
                     ad = util.aes128_dec(adkey, s[2])
                     if ad is not None:
                         OUTSET.append((s[0], ad))
-                path = dec_img_dir + self.client_id_list[index] + "/"
+                path = util.dec_img_dir + self.client_id_list[index] + "/"
                 if not os.path.exists(path):
                     os.mkdir(path, 0o777)
                     print("Created Dir: %s" % path)

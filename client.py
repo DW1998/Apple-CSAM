@@ -1,14 +1,9 @@
 import json
 import random
+import util
 
 from Crypto.Random import get_random_bytes
-
-import util
 from Crypto.PublicKey import ECC
-
-# Parent Directory
-parent_dir = "D:/Apple-CSAM-Files/"
-clients_dir = parent_dir + "Clients/"
 
 
 class Voucher:
@@ -33,7 +28,6 @@ class Client:
                 a = int.from_bytes(get_random_bytes(16), "big") % util.dhf_l
                 p.append(a)
             self.hkey.append(p)
-        print(self.hkey)
         self.adkey = int.to_bytes(random.randint(0, util.sh_p), 16, "big") # (Enc, Dec), K'
         self.fkey = get_random_bytes(16)  # PRF, K''
         self.a = util.init_sh_poly(self.adkey, server.t)
@@ -87,12 +81,6 @@ class Client:
             voucher = Voucher(triple.id, Q1_tuple, ct1, Q2_tuple, ct2, rct)
         else:
             voucher = Voucher(triple.id, Q2_tuple, ct2, Q1_tuple, ct1, rct)
-        print("voucher id: %s" % voucher.id)
-        print("voucher Q1:", end=" "), print(voucher.Q1)
-        print("voucher ct1: %s" % voucher.ct1)
-        print("voucher Q2:", end=" "), print(voucher.Q2)
-        print("voucher ct2: %s" % voucher.ct2)
-        print("voucher rct: %s" % voucher.rct)
         return voucher
 
     def generate_synth_voucher(self, triple):
@@ -120,12 +108,6 @@ class Client:
             voucher = Voucher(triple.id, Q1_tuple, ct1, Q2_tuple, ct2, rct)
         else:
             voucher = Voucher(triple.id, Q2_tuple, ct2, Q1_tuple, ct1, rct)
-        print("voucher id: %s" % voucher.id)
-        print("voucher Q1:", end=" "), print(voucher.Q1)
-        print("voucher ct1: %s" % voucher.ct1)
-        print("voucher Q2:", end=" "), print(voucher.Q2)
-        print("voucher ct2: %s" % voucher.ct2)
-        print("voucher rct: %s" % voucher.rct)
         return voucher
 
     def send_voucher(self, triple):

@@ -1,20 +1,13 @@
 import pickle
 import shutil
-from shutil import copyfile
-
 import nnhash
 import PySimpleGUI as sg
 import os
+from shutil import copyfile
 
 import util
 from client import Client
 from server import Server
-
-# Parent Directory
-parent_dir = "D:/Apple-CSAM-Files/"
-clients_dir = parent_dir + "Clients/"
-dec_img_dir = parent_dir + "Decrypted-Images/"
-client_id_file = "Client_IDs.csv"
 
 
 def save_object(obj, path):
@@ -46,17 +39,17 @@ if os.path.isfile("server.pickle"):
 else:
     server = Server("Apple")
     try:
-        shutil.rmtree(clients_dir)
-        os.mkdir(clients_dir, 0o777)
-        print("Deleted contents in folder %s" % clients_dir)
+        shutil.rmtree(util.clients_dir)
+        os.mkdir(util.clients_dir, 0o777)
+        print("Deleted contents in folder %s" % util.clients_dir)
     except Exception as exe:
-        print("Failed to delete %s because of %s" % (clients_dir, exe))
+        print("Failed to delete %s because of %s" % (util.clients_dir, exe))
     try:
-        shutil.rmtree(dec_img_dir)
-        os.mkdir(dec_img_dir, 0o777)
-        print("Deleted contents in folder %s" % dec_img_dir)
+        shutil.rmtree(util.dec_img_dir)
+        os.mkdir(util.dec_img_dir, 0o777)
+        print("Deleted contents in folder %s" % util.dec_img_dir)
     except Exception as exe:
-        print("Failed to delete %s because of %s" % (dec_img_dir, exe))
+        print("Failed to delete %s because of %s" % (util.dec_img_dir, exe))
 
 file_client_column = [
     [
@@ -130,7 +123,7 @@ while True:
             f
             for f in file_list
             if os.path.isfile(os.path.join(folder, f))
-               and f.lower().endswith((".png", ".gif"))
+               and f.lower().endswith((".png", ".gif", ".jpeg"))
         ]
         window["-FILE LIST-"].update(fnames)
     elif event == "-FILE LIST-":  # A file was chosen from the listbox
@@ -161,7 +154,7 @@ while True:
         elif len(values["-FILE LIST-"]) == 0:
             print("need to select file")
         else:
-            dst_name = clients_dir + values["-CLIENT LIST-"][0] + "/" + values["-FILE LIST-"][0]
+            dst_name = util.clients_dir + values["-CLIENT LIST-"][0] + "/" + values["-FILE LIST-"][0]
             copyfile(filename, dst_name)
             print("uploaded file from %s to %s" % (filename, dst_name))
             with open(dst_name, "rb") as imageFile:
