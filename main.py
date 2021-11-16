@@ -54,13 +54,14 @@ else:
 file_client_column = [
     [
         sg.Text("Enter ID"),
-        sg.InputText(size=(19, 1), do_not_clear=False, key="-ID-"),
+        sg.InputText(size=(20, 1), do_not_clear=False, key="-ID-"),
         sg.Button("Add Client"),
-        sg.Button("Delete Client")
+        sg.Button("Delete Client"),
+        sg.Button("Process Vouchers")
     ],
     [
         sg.Listbox(
-            values=server.client_id_list, enable_events=True, size=(50, 30), key="-CLIENT LIST-"
+            values=server.client_id_list, enable_events=True, size=(70, 42), key="-CLIENT LIST-"
         )
     ]
 ]
@@ -71,22 +72,19 @@ file_list_column = [
         sg.In(size=(22, 1), enable_events=True, key="-FOLDER-"),
         sg.FolderBrowse(),
         sg.Button("Upload"),
-        sg.Button("Process Vouchers"),
-        sg.Button("Send Synthetic Voucher")
+        sg.Button("Send Synth Voucher")
     ],
     [
         sg.Listbox(
-            values=[], enable_events=True, size=(50, 30), key="-FILE LIST-"
+            values=[], enable_events=True, size=(70, 42), key="-FILE LIST-"
         )
     ],
 ]
 
-# For now will only show the name of the file that was chosen
-
 image_viewer_column = [
     [sg.Text("Choose an image from list on left:")],
     [sg.Text(size=(40, 1), key="-TOUT-")],
-    [sg.Image(key="-IMAGE-", size=(500, 500))],
+    [sg.Image(key="-IMAGE-", size=(700, 700))],
 ]
 
 # ----- Full layout -----
@@ -132,7 +130,7 @@ while True:
                 values["-FOLDER-"], values["-FILE LIST-"][0]
             )
             window["-TOUT-"].update(filename)
-            window["-IMAGE-"].update(filename=filename, size=(500, 500))
+            window["-IMAGE-"].update(filename=filename, size=(700, 700))
         except Exception as ex:
             print("could not update filename", ex)
     elif event == "Add Client":
@@ -165,7 +163,7 @@ while True:
             server.client_list[index].add_triple(triple)
     elif event == "Process Vouchers":
         server.process_vouchers()
-    elif event == "Send Synthetic Voucher":
+    elif event == "Send Synth Voucher":
         if len(values["-CLIENT LIST-"]) == 0:
             print("need to select client")
         else:
