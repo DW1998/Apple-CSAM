@@ -53,7 +53,24 @@ else:
     except Exception as exe:
         print("Failed to delete %s because of %s" % (util.dec_img_dir, exe))
 
-file_client_column = [
+collide_management_column = [
+    [
+        sg.Text('Collide Management', size=(27, 1), justification='center', font=("Helvetica", 25), relief=sg.RELIEF_RIDGE)
+    ],
+    [
+        sg.Button("Select as Image"),
+        sg.In(size=(50, 1), enable_events=True, key="-COLLIDE IMAGE-"),
+    ],
+    [
+        sg.Button("Select as Target Hash"),
+        sg.In(size=(45, 1), enable_events=True, key="-TARGET HASH-"),
+    ]
+]
+
+client_management_column = [
+    [
+        sg.Text('Client Management', size=(27, 1), justification='center', font=("Helvetica", 25), relief=sg.RELIEF_RIDGE)
+    ],
     [
         sg.Text("Enter ID"),
         sg.InputText(size=(39, 1), do_not_clear=False, key="-ID-"),
@@ -68,6 +85,9 @@ file_client_column = [
 ]
 
 file_list_column = [
+    [
+        sg.Text('Image Selection', size=(27, 1), justification='center', font=("Helvetica", 25), relief=sg.RELIEF_RIDGE)
+    ],
     [
         sg.Text("Image Folder"),
         sg.In(size=(42, 1), enable_events=True, key="-FOLDER-"),
@@ -87,16 +107,21 @@ file_list_column = [
 ]
 
 image_viewer_column = [
+    [
+        sg.Text('Image Display', size=(27, 1), justification='center', font=("Helvetica", 25), relief=sg.RELIEF_RIDGE)
+    ],
     [sg.Text("Choose an image from list on left:")],
     [sg.Text(size=(40, 1), key="-TOUT-")],
-    [sg.Image(key="-IMAGE-", size=(700, 700))],
+    [sg.Image(key="-IMAGE-", size=(515, 700))],
 ]
 
 # ----- Full layout -----
 
 layout = [
     [
-        sg.Column(file_client_column),
+        sg.Column(collide_management_column),
+        sg.VSeperator(),
+        sg.Column(client_management_column),
         sg.VSeperator(),
         sg.Column(file_list_column),
         sg.VSeperator(),
@@ -135,7 +160,7 @@ while True:
                 values["-FOLDER-"], values["-FILE LIST-"][0]
             )
             window["-TOUT-"].update(filename)
-            window["-IMAGE-"].update(filename=filename, size=(700, 700))
+            window["-IMAGE-"].update(filename=filename, size=(515, 700))
         except Exception as ex:
             print("could not update filename", ex)
     elif event == "Add Client":
@@ -182,6 +207,16 @@ while True:
             print("need to select file")
         else:
             print(nnhash.calc_nnhash(filename))
+    elif event == "Select as Image":
+        if len(values["-FILE LIST-"]) == 0:
+            print("need to select file")
+        else:
+            window["-COLLIDE IMAGE-"].update(filename)
+    elif event == "Select as Target Hash":
+        if len(values["-FILE LIST-"]) == 0:
+            print("need to select file")
+        else:
+            window["-TARGET HASH-"].update(nnhash.calc_nnhash(filename))
 
 window.close()
 
