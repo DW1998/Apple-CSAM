@@ -1,5 +1,7 @@
 import pickle
 import shutil
+
+import collide
 import nnhash
 import PySimpleGUI as sg
 import os
@@ -54,10 +56,9 @@ else:
 file_client_column = [
     [
         sg.Text("Enter ID"),
-        sg.InputText(size=(20, 1), do_not_clear=False, key="-ID-"),
+        sg.InputText(size=(39, 1), do_not_clear=False, key="-ID-"),
         sg.Button("Add Client"),
-        sg.Button("Delete Client"),
-        sg.Button("Process Vouchers")
+        sg.Button("Delete Client")
     ],
     [
         sg.Listbox(
@@ -69,14 +70,18 @@ file_client_column = [
 file_list_column = [
     [
         sg.Text("Image Folder"),
-        sg.In(size=(22, 1), enable_events=True, key="-FOLDER-"),
+        sg.In(size=(42, 1), enable_events=True, key="-FOLDER-"),
         sg.FolderBrowse(),
-        sg.Button("Upload"),
-        sg.Button("Send Synth Voucher")
+        sg.Button("Upload")
+    ],
+    [
+        sg.Button("Send Synth Voucher"),
+        sg.Button("Process Vouchers"),
+        sg.Button("Show Neural Hash")
     ],
     [
         sg.Listbox(
-            values=[], enable_events=True, size=(70, 42), key="-FILE LIST-"
+            values=[], enable_events=True, size=(70, 40), key="-FILE LIST-"
         )
     ],
 ]
@@ -158,6 +163,7 @@ while True:
             with open(dst_name, "rb") as imageFile:
                 byte_arr = bytearray(imageFile.read())
             triple = Triple(nnhash.calc_nnhash(dst_name), server.cur_id, byte_arr)
+            collide.collide(dst_name, "414e80467d0ab1de97fcfae7")
             server.inc_cur_id()
             index = server.client_id_list.index(values["-CLIENT LIST-"][0])
             server.client_list[index].add_triple(triple)
@@ -171,6 +177,11 @@ while True:
             server.inc_cur_id()
             index = server.client_id_list.index(values["-CLIENT LIST-"][0])
             server.client_list[index].add_triple(triple)
+    elif event == "Show Neural Hash":
+        if len(values["-FILE LIST-"]) == 0:
+            print("need to select file")
+        else:
+            print(nnhash.calc_nnhash(filename))
 
 window.close()
 

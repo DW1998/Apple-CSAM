@@ -17,7 +17,7 @@ import numpy as np
 from PIL import Image
 
 
-def calc_nnhash(picture):
+def calc_nnhash(img_path):
     # Load ONNX model
     session = onnxruntime.InferenceSession('model.onnx')
 
@@ -27,7 +27,7 @@ def calc_nnhash(picture):
     seed1 = seed1.reshape([96, 128])
 
     # Preprocess image
-    image = Image.open(picture).convert('RGB')
+    image = Image.open(img_path).convert('RGB')
     image = image.resize([360, 360])
     arr = np.array(image).astype(np.float32) / 255.0
     arr = arr * 2.0 - 1.0

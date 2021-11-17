@@ -14,6 +14,7 @@ clients_dir = parent_dir + "Clients/"
 mal_img_dir = parent_dir + "Malicious-Images/"
 dec_img_dir = parent_dir + "Decrypted-Images/"
 client_id_file = "Client_IDs.csv"
+collide_dir = parent_dir + "Collide-Attacks/"
 
 dhf_l = (2 ** 64) - 59
 sh_p = 340282366920938463463374607431768211297
