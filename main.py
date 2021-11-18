@@ -59,11 +59,21 @@ collide_management_column = [
     ],
     [
         sg.Button("Select as Image"),
-        sg.In(size=(50, 1), enable_events=True, key="-COLLIDE IMAGE-"),
+        sg.In(size=(56, 1), enable_events=True, key="-COLLIDE IMAGE-"),
     ],
     [
         sg.Button("Select as Target Hash"),
-        sg.In(size=(45, 1), enable_events=True, key="-TARGET HASH-"),
+        sg.In(size=(51, 1), enable_events=True, key="-TARGET HASH-"),
+    ],
+    [
+        sg.Text("Select Iterations"),
+        sg.Slider(range=(1, 10000), orientation='h', size=(45, 20), default_value=5000, key="-SLIDER ITERATIONS-")
+    ],
+    [
+        sg.Text("Select Blur"),
+        sg.InputCombo((0.0, 0.5, 1.0), size=(24, 1), default_value=0.0, key="-BLUR-"),
+        sg.Button("Try Collision"),
+        sg.Button("Clear Collision Directory")
     ]
 ]
 
@@ -188,7 +198,6 @@ while True:
             with open(dst_name, "rb") as imageFile:
                 byte_arr = bytearray(imageFile.read())
             triple = Triple(nnhash.calc_nnhash(dst_name), server.cur_id, byte_arr)
-            collide.collide(dst_name, "414e80467d0ab1de97fcfae7")
             server.inc_cur_id()
             index = server.client_id_list.index(values["-CLIENT LIST-"][0])
             server.client_list[index].add_triple(triple)
@@ -217,6 +226,25 @@ while True:
             print("need to select file")
         else:
             window["-TARGET HASH-"].update(nnhash.calc_nnhash(filename))
+    elif event == "Try Collision":
+        col_img = values["-COLLIDE IMAGE-"]
+        targ_hash = values["-TARGET HASH-"]
+        num_iter = int(values["-SLIDER ITERATIONS-"])
+        blur = values["-BLUR-"]
+        if len(col_img) == 0:
+            print("need to select a collide image")
+        elif len(targ_hash) == 0:
+            print("need to select a target hash")
+        else:
+            print("starting collision on target hash %s with image %s, (iterations: %s, blur: %s)" % (targ_hash, col_img, num_iter, blur))
+            collide.collide(col_img, targ_hash, num_iter, blur)
+    elif event == "Clear Collision Directory":
+        try:
+            shutil.rmtree(util.collide_dir)
+            os.mkdir(util.collide_dir, 0o777)
+            print("Deleted contents in folder %s" % util.collide_dir)
+        except Exception as ex:
+            print("Failed to delete %s because of %s" % (util.collide_dir, ex))
 
 window.close()
 

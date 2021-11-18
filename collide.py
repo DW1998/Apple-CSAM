@@ -25,7 +25,7 @@ DEFAULT_W_HASH = 0.8
 DEFAULT_BLUR = 0
 
 
-def collide(img_path, nnhash):
+def collide(img_path, nnhash, num_iter, blur):
     tf.compat.v1.disable_eager_execution()
 
     model = load_model(DEFAULT_MODEL_PATH)
@@ -79,7 +79,9 @@ def collide(img_path, nnhash):
             best = (float('inf'), 0)  # (distance, image quality loss)
             dist = float('inf')
 
-            for i in range(DEFAULT_ITERATIONS):
+            perfect_collision_list = list()
+
+            for i in range(num_iter):
                 # we do an alternating projections style attack here; if we
                 # haven't found a colliding image yet, only optimize for that;
                 # if we have a colliding image, then minimize the size of the
@@ -117,12 +119,12 @@ def collide(img_path, nnhash):
                 # gradient descent step
                 g_v_norm = g_v / np.linalg.norm(g_v)
                 x = x - DEFAULT_LR * g_v_norm
-                if DEFAULT_BLUR > 0:
-                    x = blur_perturbation(original, x, DEFAULT_BLUR)
+                if blur > 0:
+                    x = blur_perturbation(original, x, blur)
                 x = x.clip(-1, 1)
                 print('iteration: {}/{}, best: ({}, {:.3f}), hash: {}, distance: {}, loss: {:.3f} ({})'.format(
                     i + 1,
-                    DEFAULT_ITERATIONS,
+                    num_iter,
                     best[0],
                     best[1],
                     hash_to_hex(hash_output_v),
@@ -130,6 +132,13 @@ def collide(img_path, nnhash):
                     loss_v,
                     loss_name
                 ))
+                if nnhash == str(hash_to_hex(hash_output_v)):
+                    perfect_collision_list.append(i + 1)
+            if len(perfect_collision_list) == 0:
+                print("No perfect collision found")
+            else:
+                print("Perfect collisions at:", end=" ")
+                print(perfect_collision_list)
 
 
 def quantize(x):
