@@ -108,10 +108,8 @@ def collide(img_path, nnhash, num_iter, blur):
                         print("added dir: " + img_dir)
                     except OSError:
                         pass
-                    save_image(x, os.path.join(img_dir, 'cur={}_iter={:05d}_dist={:02d}_q={:.3f}.png'.format(
-                        hash_to_hex(hash_output_v),
-                        i + 1, dist,
-                        img_loss_v
+                    save_image(x, os.path.join(img_dir, 'dist={:02d}_q={:.3f}_iter={:05d}.png'.format(
+                        dist, img_loss_v, i + 1
                     )))
                 if score < best:
                     best = score

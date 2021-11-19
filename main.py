@@ -55,7 +55,7 @@ else:
 
 collide_management_column = [
     [
-        sg.Text('Collide Management', size=(27, 1), justification='center', font=("Helvetica", 25), relief=sg.RELIEF_RIDGE)
+        sg.Text('Collide Section', size=(27, 1), justification='center', font=("Helvetica", 25), relief=sg.RELIEF_RIDGE)
     ],
     [
         sg.Button("Select as Image"),
@@ -74,6 +74,21 @@ collide_management_column = [
         sg.InputCombo((0.0, 0.5, 1.0), size=(24, 1), default_value=0.0, key="-BLUR-"),
         sg.Button("Try Collision"),
         sg.Button("Clear Collision Directory")
+    ],
+    [
+        sg.Text('Compare Section', size=(27, 1), justification='center', font=("Helvetica", 25), relief=sg.RELIEF_RIDGE)
+    ],
+    [
+        sg.Button("Select as Hash 1"),
+        sg.In(size=(55, 1), enable_events=True, key="-HASH 1-")
+    ],
+    [
+        sg.Button("Select as Hash 2"),
+        sg.In(size=(55, 1), enable_events=True, key="-HASH 2-")
+    ],
+    [
+        sg.Button("Compare Hashes"),
+        sg.In(size=(55, 1), enable_events=True, key="-HASH XOR-")
     ]
 ]
 
@@ -215,7 +230,9 @@ while True:
         if len(values["-FILE LIST-"]) == 0:
             print("need to select file")
         else:
-            print(nnhash.calc_nnhash(filename))
+            neural_hash = nnhash.calc_nnhash(filename)
+            print(neural_hash)
+            print(bin(int(neural_hash, 16))[2:].zfill(96))
     elif event == "Select as Image":
         if len(values["-FILE LIST-"]) == 0:
             print("need to select file")
@@ -245,6 +262,25 @@ while True:
             print("Deleted contents in folder %s" % util.collide_dir)
         except Exception as ex:
             print("Failed to delete %s because of %s" % (util.collide_dir, ex))
+    elif event == "Select as Hash 1":
+        if len(values["-FILE LIST-"]) == 0:
+            print("need to select file")
+        else:
+            window["-HASH 1-"].update(nnhash.calc_nnhash(filename))
+    elif event == "Select as Hash 2":
+        if len(values["-FILE LIST-"]) == 0:
+            print("need to select file")
+        else:
+            window["-HASH 2-"].update(nnhash.calc_nnhash(filename))
+    elif event == "Compare Hashes":
+        if len(values["-HASH 1-"]) == 0 or len(values["-HASH 2-"]) == 0:
+            print("Please select 2 Hashes to compare")
+        else:
+            hash1 = bin(int(values["-HASH 1-"], 16))[2:].zfill(96)
+            hash2 = bin(int(values["-HASH 2-"], 16))[2:].zfill(96)
+            xor = int(hash1, 2) ^ int(hash2, 2)
+            out_hex = hex(xor)[2:].zfill(24)
+            window["-HASH XOR-"].update(out_hex)
 
 window.close()
 
