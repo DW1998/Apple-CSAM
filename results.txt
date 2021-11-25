@@ -1,61 +1,61 @@
 Results:
-D:/Apple-CSAM-Files/Image-Database/Greyscale/ Counter({0: 43, 1: 29, 2: 18, 3: 6, 4: 3, 5: 1}), 43
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res1/ Counter({5: 14, 4: 12, 3: 11, 6: 10, 7: 10, 9: 9, 2: 8, 8: 7, 10: 5, 11: 2, 13: 2, 18: 2, 1: 1, 16: 1, 23: 1, 32: 1, 12: 1, 0: 1, 15: 1, 14: 1}), 1
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res5/ Counter({3: 23, 4: 13, 2: 13, 1: 11, 6: 11, 5: 11, 0: 8, 9: 3, 7: 3, 8: 2, 10: 1, 11: 1}), 8
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res10/ Counter({0: 39, 1: 32, 2: 13, 3: 8, 5: 4, 4: 3, 6: 1}), 39
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res15/ Counter({0: 47, 1: 31, 2: 14, 3: 5, 4: 2, 5: 1}), 47
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res20/ Counter({0: 55, 1: 32, 2: 12, 3: 1}), 55
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res25/ Counter({0: 63, 1: 27, 2: 7, 3: 3}), 63
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res30/ Counter({0: 73, 1: 18, 2: 9}), 73
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res35/ Counter({0: 69, 1: 28, 2: 3}), 69
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res40/ Counter({0: 74, 1: 24, 2: 2}), 74
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res45/ Counter({0: 76, 1: 21, 2: 2, 3: 1}), 76
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res50/ Counter({0: 77, 1: 19, 2: 4}), 77
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res55/ Counter({0: 80, 1: 19, 2: 1}), 80
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res60/ Counter({0: 82, 1: 16, 2: 2}), 82
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res65/ Counter({0: 87, 1: 12, 2: 1}), 87
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res70/ Counter({0: 82, 1: 17, 2: 1}), 82
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res75/ Counter({0: 91, 1: 9}), 91
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res80/ Counter({0: 93, 1: 7}), 93
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res85/ Counter({0: 97, 1: 3}), 97
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res90/ Counter({0: 98, 1: 2}), 98
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res95/ Counter({0: 97, 1: 3}), 97
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res100/ Counter({0: 98, 1: 2}), 98
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res1/ Counter({5: 15, 3: 14, 4: 11, 6: 10, 7: 10, 8: 8, 9: 7, 2: 6, 10: 5, 11: 2, 12: 2, 18: 2, 1: 1, 16: 1, 23: 1, 32: 1, 13: 1, 0: 1, 15: 1, 14: 1}), 1
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res5/ Counter({3: 23, 2: 14, 4: 12, 5: 12, 1: 10, 6: 10, 0: 8, 7: 4, 9: 3, 8: 2, 10: 1, 11: 1}), 8
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res10/ Counter({0: 37, 1: 32, 2: 16, 3: 7, 4: 4, 5: 3, 6: 1}), 37
+D:/Apple-CSAM-Files/Image-Database/Greyscale/ Counter({0: 43, 1: 28, 2: 19, 3: 6, 4: 3, 5: 1}) , 43
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res1/ Counter({5: 15, 3: 13, 4: 11, 6: 10, 7: 10, 8: 8, 9: 7, 2: 6, 10: 5, 11: 2, 16: 2, 12: 2, 18: 2, 1: 1, 23: 1, 32: 1, 13: 1, 0: 1, 15: 1, 14: 1}) , 1
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res5/ Counter({3: 23, 2: 14, 5: 13, 4: 12, 6: 10, 1: 9, 0: 8, 7: 4, 9: 3, 8: 2, 10: 1, 11: 1}) , 8
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res10/ Counter({0: 36, 1: 32, 2: 17, 3: 7, 4: 4, 5: 3, 6: 1}) , 36
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res15/ Counter({0: 48, 1: 30, 2: 14, 3: 6, 4: 1, 5: 1}) , 48
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res20/ Counter({0: 59, 1: 29, 2: 11, 3: 1}) , 59
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res25/ Counter({0: 64, 1: 29, 2: 5, 3: 2}) , 64
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res20/ Counter({0: 60, 1: 28, 2: 11, 3: 1}) , 60
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res25/ Counter({0: 65, 1: 28, 2: 5, 3: 2}) , 65
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res30/ Counter({0: 73, 1: 19, 2: 8}) , 73
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res35/ Counter({0: 67, 1: 30, 2: 2, 3: 1}) , 67
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res40/ Counter({0: 80, 1: 17, 2: 3}) , 80
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res45/ Counter({0: 75, 1: 22, 2: 2, 3: 1}) , 75
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res50/ Counter({0: 78, 1: 18, 2: 4}) , 78
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res45/ Counter({0: 76, 1: 21, 2: 2, 3: 1}) , 76
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res50/ Counter({0: 77, 1: 19, 2: 4}) , 77
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res55/ Counter({0: 80, 1: 17, 2: 3}) , 80
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res60/ Counter({0: 82, 1: 16, 3: 1, 2: 1}) , 82
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res65/ Counter({0: 87, 1: 12, 2: 1}) , 87
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res65/ Counter({0: 88, 1: 11, 2: 1}) , 88
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res70/ Counter({0: 83, 1: 16, 2: 1}) , 83
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res75/ Counter({0: 87, 1: 13}) , 87
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res75/ Counter({0: 88, 1: 12}) , 88
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res80/ Counter({0: 93, 1: 7}) , 93
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res85/ Counter({0: 98, 1: 2}) , 98
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res90/ Counter({0: 96, 1: 4}) , 96
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res95/ Counter({0: 96, 1: 4}) , 96
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=-1/res100/ Counter({0: 98, 1: 2}) , 98
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res1/ Counter({5: 14, 3: 13, 7: 11, 4: 11, 6: 10, 9: 8, 2: 7, 10: 6, 8: 6, 11: 2, 13: 2, 18: 2, 1: 1, 16: 1, 23: 1, 32: 1, 12: 1, 0: 1, 15: 1, 14: 1}) , 1
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res5/ Counter({3: 22, 2: 14, 4: 12, 5: 12, 1: 11, 6: 10, 0: 8, 7: 4, 9: 3, 8: 2, 10: 1, 11: 1}) , 8
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res10/ Counter({0: 37, 1: 35, 2: 13, 3: 7, 5: 4, 4: 3, 6: 1}) , 37
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res1/ Counter({5: 14, 4: 12, 6: 10, 7: 10, 3: 10, 9: 9, 2: 8, 8: 7, 10: 5, 11: 2, 13: 2, 18: 2, 1: 1, 16: 1, 23: 1, 32: 1, 12: 1, 0: 1, 17: 1, 15: 1, 14: 1}) , 1
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res5/ Counter({3: 23, 4: 13, 2: 13, 6: 12, 5: 11, 1: 10, 0: 8, 9: 3, 7: 3, 8: 2, 10: 1, 11: 1}) , 8
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res10/ Counter({0: 38, 1: 32, 2: 13, 3: 9, 5: 4, 4: 3, 6: 1}) , 38
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res15/ Counter({0: 47, 1: 31, 2: 14, 3: 5, 4: 2, 5: 1}) , 47
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res20/ Counter({0: 55, 1: 32, 2: 12, 3: 1}) , 55
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res25/ Counter({0: 64, 1: 26, 2: 7, 3: 3}) , 64
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res30/ Counter({0: 73, 1: 18, 2: 9}) , 73
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res35/ Counter({0: 69, 1: 28, 2: 3}) , 69
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res40/ Counter({0: 75, 1: 23, 2: 2}) , 75
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res45/ Counter({0: 77, 1: 20, 2: 2, 3: 1}) , 77
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res50/ Counter({0: 76, 1: 20, 2: 4}) , 76
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res55/ Counter({0: 80, 1: 19, 2: 1}) , 80
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res60/ Counter({0: 82, 1: 16, 2: 2}) , 82
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res65/ Counter({0: 88, 1: 11, 2: 1}) , 88
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res70/ Counter({0: 82, 1: 17, 2: 1}) , 82
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res75/ Counter({0: 91, 1: 9}) , 91
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res80/ Counter({0: 93, 1: 7}) , 93
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res85/ Counter({0: 97, 1: 3}) , 97
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res90/ Counter({0: 98, 1: 2}) , 98
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res95/ Counter({0: 97, 1: 3}) , 97
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=0/res100/ Counter({0: 98, 1: 2}) , 98
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res1/ Counter({5: 14, 3: 12, 7: 11, 4: 11, 6: 10, 9: 8, 2: 7, 10: 6, 8: 6, 11: 2, 13: 2, 18: 2, 1: 1, 16: 1, 23: 1, 32: 1, 12: 1, 0: 1, 17: 1, 15: 1, 14: 1}) , 1
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res5/ Counter({3: 22, 2: 14, 4: 12, 5: 12, 6: 11, 1: 10, 0: 8, 7: 4, 9: 3, 8: 2, 10: 1, 11: 1}) , 8
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res10/ Counter({0: 36, 1: 35, 2: 14, 3: 7, 5: 4, 4: 3, 6: 1}) , 36
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res15/ Counter({0: 48, 1: 30, 2: 14, 3: 5, 4: 2, 5: 1}) , 48
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res20/ Counter({0: 57, 1: 31, 2: 11, 3: 1}) , 57
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res25/ Counter({0: 62, 1: 28, 2: 8, 3: 2}) , 62
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res25/ Counter({0: 63, 1: 27, 2: 8, 3: 2}) , 63
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res30/ Counter({0: 72, 1: 20, 2: 8}) , 72
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res35/ Counter({0: 69, 1: 28, 2: 3}) , 69
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res40/ Counter({0: 75, 1: 22, 2: 3}) , 75
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res45/ Counter({0: 76, 1: 21, 2: 2, 3: 1}) , 76
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res50/ Counter({0: 77, 1: 18, 2: 5}) , 77
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res40/ Counter({0: 76, 1: 21, 2: 3}) , 76
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res45/ Counter({0: 77, 1: 20, 2: 2, 3: 1}) , 77
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res50/ Counter({0: 76, 1: 19, 2: 5}) , 76
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res55/ Counter({0: 81, 1: 18, 2: 1}) , 81
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res60/ Counter({0: 82, 1: 16, 3: 1, 2: 1}) , 82
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res65/ Counter({0: 88, 1: 11, 2: 1}) , 88
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res65/ Counter({0: 89, 1: 10, 2: 1}) , 89
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res70/ Counter({0: 82, 1: 17, 2: 1}) , 82
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res75/ Counter({0: 91, 1: 9}) , 91
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res80/ Counter({0: 93, 1: 7}) , 93
@@ -63,24 +63,44 @@ D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res85/ Counter({0: 9
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res90/ Counter({0: 98, 1: 2}) , 98
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res95/ Counter({0: 97, 1: 3}) , 97
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=1/res100/ Counter({0: 97, 1: 3}) , 97
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res1/ Counter({5: 15, 3: 14, 4: 11, 6: 10, 7: 10, 8: 8, 9: 7, 2: 6, 10: 5, 11: 2, 12: 2, 18: 2, 1: 1, 16: 1, 23: 1, 32: 1, 13: 1, 0: 1, 15: 1, 14: 1}) , 1
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res5/ Counter({3: 23, 2: 14, 4: 12, 5: 12, 1: 10, 6: 10, 0: 8, 7: 4, 9: 3, 8: 2, 10: 1, 11: 1}) , 8
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res10/ Counter({0: 37, 1: 32, 2: 16, 3: 7, 4: 4, 5: 3, 6: 1}) , 37
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res1/ Counter({5: 15, 3: 13, 4: 11, 6: 10, 7: 10, 8: 8, 9: 7, 2: 6, 10: 5, 11: 2, 16: 2, 12: 2, 18: 2, 1: 1, 23: 1, 32: 1, 13: 1, 0: 1, 15: 1, 14: 1}) , 1
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res5/ Counter({3: 23, 2: 14, 5: 13, 4: 12, 6: 10, 1: 9, 0: 8, 7: 4, 9: 3, 8: 2, 10: 1, 11: 1}) , 8
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res10/ Counter({0: 36, 1: 32, 2: 17, 3: 7, 4: 4, 5: 3, 6: 1}) , 36
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res15/ Counter({0: 48, 1: 30, 2: 14, 3: 6, 4: 1, 5: 1}) , 48
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res20/ Counter({0: 59, 1: 29, 2: 11, 3: 1}) , 59
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res25/ Counter({0: 64, 1: 29, 2: 5, 3: 2}) , 64
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res20/ Counter({0: 60, 1: 28, 2: 11, 3: 1}) , 60
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res25/ Counter({0: 65, 1: 28, 2: 5, 3: 2}) , 65
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res30/ Counter({0: 73, 1: 19, 2: 8}) , 73
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res35/ Counter({0: 67, 1: 30, 2: 2, 3: 1}) , 67
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res40/ Counter({0: 80, 1: 17, 2: 3}) , 80
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res45/ Counter({0: 75, 1: 22, 2: 2, 3: 1}) , 75
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res50/ Counter({0: 78, 1: 18, 2: 4}) , 78
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res45/ Counter({0: 76, 1: 21, 2: 2, 3: 1}) , 76
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res50/ Counter({0: 77, 1: 19, 2: 4}) , 77
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res55/ Counter({0: 80, 1: 17, 2: 3}) , 80
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res60/ Counter({0: 82, 1: 16, 3: 1, 2: 1}) , 82
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res65/ Counter({0: 87, 1: 12, 2: 1}) , 87
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res65/ Counter({0: 88, 1: 11, 2: 1}) , 88
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res70/ Counter({0: 83, 1: 16, 2: 1}) , 83
-D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res75/ Counter({0: 87, 1: 13}) , 87
+D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res75/ Counter({0: 88, 1: 12}) , 88
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res80/ Counter({0: 93, 1: 7}) , 93
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res85/ Counter({0: 98, 1: 2}) , 98
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res90/ Counter({0: 96, 1: 4}) , 96
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res95/ Counter({0: 96, 1: 4}) , 96
 D:/Apple-CSAM-Files/Image-Database/Resolution/Subsampling=2/res100/ Counter({0: 98, 1: 2}) , 98
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.05/ Counter({4: 17, 2: 14, 5: 11, 7: 10, 1: 9, 3: 9, 6: 8, 8: 6, 0: 4, 9: 4, 12: 3, 11: 3, 10: 2}) , 4
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.1/ Counter({0: 40, 1: 28, 2: 17, 3: 8, 4: 5, 5: 1, 6: 1}) , 40
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.15/ Counter({0: 64, 1: 24, 2: 7, 3: 3, 4: 2}) , 64
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.2/ Counter({0: 73, 1: 22, 2: 4, 4: 1}) , 73
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.25/ Counter({0: 78, 1: 19, 2: 2, 3: 1}) , 78
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.3/ Counter({0: 86, 1: 13, 2: 1}) , 86
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.35/ Counter({0: 89, 1: 10, 2: 1}) , 89
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.4/ Counter({0: 93, 1: 6, 2: 1}) , 93
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.45/ Counter({0: 92, 1: 7, 2: 1}) , 92
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.5/ Counter({0: 96, 1: 4}) , 96
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.55/ Counter({0: 93, 1: 7}) , 93
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.6/ Counter({0: 95, 1: 5}) , 95
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.65/ Counter({0: 94, 1: 6}) , 94
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.7/ Counter({0: 96, 1: 4}) , 96
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.75/ Counter({0: 96, 1: 4}) , 96
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.8/ Counter({0: 95, 1: 5}) , 95
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.85/ Counter({0: 95, 1: 5}) , 95
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.9/ Counter({0: 98, 1: 2}) , 98
+D:/Apple-CSAM-Files/Image-Database/Resize/scale0.95/ Counter({0: 97, 1: 3}) , 97
+D:/Apple-CSAM-Files/Image-Database/Resize/scale1.0/ Counter({0: 98, 1: 2}) , 98

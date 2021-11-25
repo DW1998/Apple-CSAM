@@ -7,7 +7,7 @@ import nnhash
 root_dir = "D:/Apple-CSAM-Files/Image-Database/"
 standard_dir = root_dir + "Standard/"
 greyscale_dir = root_dir + "Greyscale/"
-resolution_dir = root_dir + "Resolution/Subsampling=2/"
+resolution_dir = root_dir + "Resolution/"
 resize_dir = root_dir + "Resize/"
 png_dir = root_dir + "PNG-Images/"
 
@@ -76,23 +76,22 @@ def generate_and_compare_resize(scale):
         img = Image.open(standard_dir + img_file)
         width, height = img.size
         img_resize = img.resize((int(width * scale), int(height * scale)))
-        img_resize.save(res_dir + img_file)
+        img_resize.save(res_dir + img_file, quality=100, subsampling=-1)
     compare_images(res_dir)
 
 
 if __name__ == '__main__':
-    conv_to_png()
-    generate_and_compare_greyscale()
-    for i in range(-1, 3):
-        generate_and_compare_resolution(1, i)
-        ctr = 5
-        while ctr <= 100:
-            generate_and_compare_resolution(ctr, i)
-            ctr += 5
-    val = 1
-    while val <= 20:
-        sca = float(val) / 20
-        generate_and_compare_resize(sca)
-        val += 1
-
-
+    # conv_to_png()
+    # generate_and_compare_greyscale()
+    # for i in range(-1, 3):
+    #    generate_and_compare_resolution(1, i)
+    #    ctr = 5
+    #    while ctr <= 100:
+    #        generate_and_compare_resolution(ctr, i)
+    #        ctr += 5
+    # val = 1
+    # while val <= 20:
+    #    sca = float(val) / 20
+    #    generate_and_compare_resize(sca)
+    #    val += 1
+    pass
