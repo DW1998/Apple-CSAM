@@ -10,7 +10,10 @@ greyscale_dir = root_dir + "Greyscale/"
 resolution_dir = root_dir + "Resolution/"
 resize_dir = root_dir + "Resize/"
 crop_dir = root_dir + "Crop/"
+rotation_dir = root_dir + "Rotation/"
+flip_dir = root_dir + "Flip/"
 png_dir = root_dir + "PNG-Images/"
+test_dir = root_dir + "Test/"
 
 
 def conv_to_png():
@@ -39,15 +42,82 @@ def generate_and_compare_greyscale():
 
 
 def generate_and_compare_resolution(res, sub):
-    res_dir = resolution_dir + "Subsampling=" + str(sub) + "/res" + str(res) + "/"
-    if not os.path.exists(res_dir):
-        os.makedirs(res_dir)
-        # print("created folder %s" % res_dir)
+    result_dir = resolution_dir + "Subsampling=" + str(sub) + "/res" + str(res) + "/"
+    if not os.path.exists(result_dir):
+        os.makedirs(result_dir)
+        # print("created folder %s" % result_dir)
     for img_file in os.listdir(standard_dir):
         img = Image.open(standard_dir + img_file)
-        img.save(res_dir + img_file, quality=res, subsampling=sub)
+        img.save(result_dir + img_file, quality=res, subsampling=sub)
         # print(img_file)
-    compare_images(res_dir)
+    compare_images(result_dir)
+
+
+def generate_and_compare_resize(scale):
+    result_dir = resize_dir + "scale" + str(scale) + "/"
+    if not os.path.exists(result_dir):
+        os.makedirs(result_dir)
+        # print("created folder %s" % result_dir)
+    for img_file in os.listdir(standard_dir):
+        img = Image.open(standard_dir + img_file)
+        width, height = img.size
+        img_resize = img.resize((int(width * scale), int(height * scale)))
+        img_resize.save(result_dir + img_file, quality=100, subsampling=-1)
+    compare_images(result_dir)
+
+
+def generate_and_compare_crop(percent):
+    result_dir = crop_dir + "percent" + str(percent) + "/"
+    if not os.path.exists(result_dir):
+        os.makedirs(result_dir)
+        # print("created folder %s" % result_dir)
+    for img_file in os.listdir(standard_dir):
+        img = Image.open(standard_dir + img_file)
+        width, height = img.size
+        width_offset = int(float(width) * (percent / 100))
+        height_offset = int(float(height) * (percent / 100))
+        borders = (width_offset, height_offset, width - width_offset, height - height_offset)
+        img_crop = img.crop(borders)
+        img_crop.save(result_dir + img_file, quality=100, subsampling=-1)
+    compare_images(result_dir)
+
+
+def generate_and_compare_rotation(degree, exp):
+    result_dir = rotation_dir + "expand=" + str(exp) + "/degree" + str(degree) + "/"
+    if not os.path.exists(result_dir):
+        os.makedirs(result_dir)
+        # print("created folder %s" % result_dir)
+    for img_file in os.listdir(standard_dir):
+        img = Image.open(standard_dir + img_file)
+        img.rotate = img.rotate(degree, expand=exp)
+        img.rotate.save(result_dir + img_file, quality=100, subsampling=-1)
+    compare_images(result_dir)
+
+
+def generate_and_compare_flip():
+    if not os.path.exists(flip_dir):
+        os.makedirs(flip_dir)
+        # print("created folder %s" % flip_dir)
+    for img_file in os.listdir(standard_dir):
+        img = Image.open(standard_dir + img_file)
+        img_flip = img.transpose(Image.FLIP_LEFT_RIGHT)
+        img_flip.save(flip_dir + img_file, quality=100, subsampling=-1)
+    compare_images(flip_dir)
+
+
+def test():
+    ctr = 0
+    for img_file in os.listdir(standard_dir):
+        ctr += 1
+        if ctr > 5:
+            break
+        img = Image.open(standard_dir + img_file)
+        print(img_file)
+        print(img.format)
+        print(img.mode)
+        print(img.size)
+        img_rotate = img.rotate(1)
+        img_rotate.show()
 
 
 def compare_images(compare_folder):
@@ -68,36 +138,8 @@ def compare_images(compare_folder):
         print(compare_folder, Counter(dist_lst), ",", Counter(dist_lst).get(0))
 
 
-def generate_and_compare_resize(scale):
-    res_dir = resize_dir + "scale" + str(scale) + "/"
-    if not os.path.exists(res_dir):
-        os.makedirs(res_dir)
-        # print("created folder %s" % res_dir)
-    for img_file in os.listdir(standard_dir):
-        img = Image.open(standard_dir + img_file)
-        width, height = img.size
-        img_resize = img.resize((int(width * scale), int(height * scale)))
-        img_resize.save(res_dir + img_file, quality=100, subsampling=-1)
-    compare_images(res_dir)
-
-
-def generate_and_compare_crop(percent):
-    res_dir = crop_dir + "percent" + str(percent) + "/"
-    if not os.path.exists(res_dir):
-        os.makedirs(res_dir)
-        # print("created folder %s" % res_dir)
-    for img_file in os.listdir(standard_dir):
-        img = Image.open(standard_dir + img_file)
-        width, height = img.size
-        width_offset = int(float(width) * (percent / 100))
-        height_offset = int(float(height) * (percent / 100))
-        borders = (width_offset, height_offset, width - width_offset, height - height_offset)
-        img_crop = img.crop(borders)
-        img_crop.save(res_dir + img_file, quality=100, subsampling=-1)
-    compare_images(res_dir)
-
-
 if __name__ == '__main__':
+    pass
     # conv_to_png()
     # generate_and_compare_greyscale()
     # for i in range(-1, 3):
@@ -111,10 +153,21 @@ if __name__ == '__main__':
     #    sca = float(val_resize) / 20
     #    generate_and_compare_resize(sca)
     #    val_resize += 1
-    val_crop = 100
-    while val_crop >= 0:
-        per = float(val_crop) / 10
-        generate_and_compare_crop(per)
-        val_crop -= 5
+    # val_crop = 100
+    # while val_crop >= 0:
+    #    per = float(val_crop) / 10
+    #    generate_and_compare_crop(per)
+    #    val_crop -= 5
+    # for i in range(0, 4):
+    #    generate_and_compare_rotation(i * 90, False)
+    # for i in range(1, 11):
+    #    generate_and_compare_rotation(i, False)
+    #    generate_and_compare_rotation(-i, False)
+    # for i in range(0, 4):
+    #    generate_and_compare_rotation(i * 90, True)
+    # for i in range(1, 11):
+    #    generate_and_compare_rotation(i, True)
+    #    generate_and_compare_rotation(-i, True)
+    # generate_and_compare_flip()
 
 
