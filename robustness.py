@@ -12,6 +12,7 @@ resize_dir = root_dir + "Resize/"
 crop_dir = root_dir + "Crop/"
 rotation_dir = root_dir + "Rotation/"
 flip_dir = root_dir + "Flip/"
+logo_dir = root_dir + "Logo/"
 png_dir = root_dir + "PNG-Images/"
 test_dir = root_dir + "Test/"
 
@@ -105,19 +106,58 @@ def generate_and_compare_flip():
     compare_images(flip_dir)
 
 
+def generate_and_compare_logo(scale):
+    result_dir = logo_dir + "scale" + str(scale) + "/"
+    if not os.path.exists(result_dir):
+        os.makedirs(result_dir)
+        # print("created folder %s" % result_dir)
+    for img_file in os.listdir(standard_dir):
+        img = Image.open(standard_dir + img_file)
+        logo = Image.open(root_dir + "apple_logo.png").convert("RGBA")
+        img_width, img_height = img.size
+        logo_width, logo_height = logo.size
+        img_ratio = img_width / img_height
+        logo_ratio = logo_width / logo_height
+        if img_ratio >= logo_ratio:
+            # height is border
+            logo_abs_height = img.height * scale
+            scale_factor = logo_height / logo_abs_height
+        else:
+            # width is border
+            logo_abs_width = img.width * scale
+            scale_factor = logo.width / logo_abs_width
+        logo_resize = logo.resize((int(logo_width / scale_factor), int(logo_height / scale_factor)))
+        pos = ((img.width - logo_resize.width), img.height - logo_resize.height)
+        img.paste(logo_resize, pos, logo_resize)
+        img.save(result_dir + img_file, quality=100, subsampling=-1)
+    compare_images(result_dir)
+
+
 def test():
     ctr = 0
     for img_file in os.listdir(standard_dir):
         ctr += 1
-        if ctr > 5:
+        if ctr > 2:
             break
         img = Image.open(standard_dir + img_file)
-        print(img_file)
-        print(img.format)
-        print(img.mode)
-        print(img.size)
-        img_rotate = img.rotate(1)
-        img_rotate.show()
+        logo = Image.open(root_dir + "apple_logo.png").convert("RGBA")
+        img_width, img_height = img.size
+        logo_width, logo_height = logo.size
+        img_ratio = img_width / img_height
+        logo_ratio = logo_width / logo_height
+        scale = 0.05
+        if img_ratio >= logo_ratio:
+            # height is border
+            logo_abs_height = img.height * scale
+            scale_factor = logo_height / logo_abs_height
+        else:
+            # width is border
+            logo_abs_width = img.width * scale
+            scale_factor = logo.width / logo_abs_width
+        logo_resize = logo.resize((int(logo_width / scale_factor), int(logo_height / scale_factor)))
+        pos = ((img.width - logo_resize.width), img.height - logo_resize.height)
+        img.paste(logo_resize, pos, logo_resize)
+        img.show()
 
 
 def compare_images(compare_folder):
@@ -169,5 +209,7 @@ if __name__ == '__main__':
     #    generate_and_compare_rotation(i, True)
     #    generate_and_compare_rotation(-i, True)
     # generate_and_compare_flip()
+    # for i in range(1, 21):
+    #    generate_and_compare_logo(i / 20)
 
 
