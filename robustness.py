@@ -1,5 +1,5 @@
 import os
-from PIL import Image
+from PIL import Image, ImageEnhance
 from collections import Counter
 
 import nnhash
@@ -13,6 +13,7 @@ crop_dir = root_dir + "Crop/"
 rotation_dir = root_dir + "Rotation/"
 flip_dir = root_dir + "Flip/"
 logo_dir = root_dir + "Logo/"
+enhancement_dir = root_dir + "Enhancement/"
 png_dir = root_dir + "PNG-Images/"
 test_dir = root_dir + "Test/"
 
@@ -133,6 +134,38 @@ def generate_and_compare_logo(scale):
     compare_images(result_dir)
 
 
+def generate_and_compare_enhancement(enhancement_val, factor):
+    # contrast = 1
+    # color = 2
+    # brightness = 3
+    # sharpness = 4
+    if enhancement_val == 1:
+        enh = "Contrast/"
+    elif enhancement_val == 2:
+        enh = "Color/"
+    elif enhancement_val == 3:
+        enh = "Brightness/"
+    else:
+        enh = "Sharpness/"
+    result_dir = enhancement_dir + enh + str(factor) + "/"
+    if not os.path.exists(result_dir):
+        os.makedirs(result_dir)
+        # print("created folder %s" % result_dir)
+    for img_file in os.listdir(standard_dir):
+        img = Image.open(standard_dir + img_file)
+        enhancement = ImageEnhance.Contrast(img)
+        if enhancement_val == 1:
+            enhancement = ImageEnhance.Contrast(img)
+        elif enhancement_val == 2:
+            enhancement = ImageEnhance.Color(img)
+        elif enhancement_val == 3:
+            enhancement = ImageEnhance.Brightness(img)
+        else:
+            enhancement = ImageEnhance.Sharpness(img)
+        enhancement.enhance(factor).save(result_dir + img_file, quality=100, subsampling=-1)
+    compare_images(result_dir)
+
+
 def test():
     ctr = 0
     for img_file in os.listdir(standard_dir):
@@ -211,5 +244,8 @@ if __name__ == '__main__':
     # generate_and_compare_flip()
     # for i in range(1, 21):
     #    generate_and_compare_logo(i / 20)
+    # for i in range(1, 5):
+    #    for j in range(0, 31):
+    #        generate_and_compare_enhancement(i, j / 10)
 
 
