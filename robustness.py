@@ -1,6 +1,9 @@
 import os
 from PIL import Image, ImageEnhance
 from collections import Counter
+import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib.ticker as mtick
 
 import nnhash
 
@@ -16,6 +19,43 @@ logo_dir = root_dir + "Logo/"
 enhancement_dir = root_dir + "Enhancement/"
 png_dir = root_dir + "PNG-Images/"
 test_dir = root_dir + "Test/"
+
+
+# plot
+fig, ax = plt.subplots()
+
+# resolution
+x_points_resolution = [i * 5 for i in range(0, 21)]
+y_points_resolution_sub_minus_one = [1, 8, 36, 48, 60, 65, 73, 67, 80, 76, 77, 80, 82, 88, 83, 88, 93, 98, 96, 96, 98]
+y_points_resolution_sub_zero = [1, 8, 38, 47, 55, 64, 73, 69, 75, 77, 76, 80, 82, 88, 82, 91, 93, 97, 98, 97, 98]
+y_points_resolution_sub_one = [1, 8, 36, 48, 57, 63, 72, 69, 76, 77, 76, 81, 82, 89, 82, 91, 93, 96, 98, 97, 97]
+y_points_resolution_sub_two = [1, 8, 36, 48, 60, 65, 73, 67, 80, 76, 77, 80, 82, 88, 83, 88, 93, 98, 96, 96, 98]
+
+# ax.plot(x_points_resolution, y_points_resolution_sub_minus_one, label="subsampling -1")
+# ax.plot(x_points_resolution, y_points_resolution_sub_zero, label="subsampling 0")
+# ax.plot(x_points_resolution, y_points_resolution_sub_one, label="subsampling 1")
+# ax.plot(x_points_resolution, y_points_resolution_sub_two, label="subsampling 2")
+
+# resize
+x_points_resize = [i * 5 for i in range(1, 21)]
+y_points_resize = [4, 40, 64, 73, 78, 86, 89, 93, 92, 96, 93, 95, 94, 96, 96, 95, 95, 98, 97, 98]
+
+# ax.plot(x_points_resize, y_points_resize)
+
+# crop
+x_points_crop = [i / 2 for i in range(11, -1, -1)]
+y_points_crop = [0, 1, 1, 2, 2, 2, 5, 7, 15, 34, 48, 98]
+
+ax.plot(x_points_crop, y_points_crop)
+
+ax.xaxis.set_major_formatter(mtick.PercentFormatter())
+ax.yaxis.set_major_formatter(mtick.PercentFormatter())
+
+plt.xlabel("Crop amount")
+plt.ylabel("Unchanged hashes")
+# plt.legend()
+plt.grid(True)
+plt.show()
 
 
 def conv_to_png():
@@ -216,8 +256,7 @@ if __name__ == '__main__':
     # conv_to_png()
     # generate_and_compare_greyscale()
     # for i in range(-1, 3):
-    #    generate_and_compare_resolution(1, i)
-    #    ctr = 5
+    #    ctr = 0
     #    while ctr <= 100:
     #        generate_and_compare_resolution(ctr, i)
     #        ctr += 5
@@ -247,5 +286,3 @@ if __name__ == '__main__':
     # for i in range(1, 5):
     #    for j in range(0, 31):
     #        generate_and_compare_enhancement(i, j / 10)
-
-
