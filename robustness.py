@@ -2,7 +2,6 @@ import os
 from PIL import Image, ImageEnhance
 from collections import Counter
 import matplotlib.pyplot as plt
-import numpy as np
 import matplotlib.ticker as mtick
 
 import nnhash
@@ -31,31 +30,75 @@ y_points_resolution_sub_zero = [1, 8, 38, 47, 55, 64, 73, 69, 75, 77, 76, 80, 82
 y_points_resolution_sub_one = [1, 8, 36, 48, 57, 63, 72, 69, 76, 77, 76, 81, 82, 89, 82, 91, 93, 96, 98, 97, 97]
 y_points_resolution_sub_two = [1, 8, 36, 48, 60, 65, 73, 67, 80, 76, 77, 80, 82, 88, 83, 88, 93, 98, 96, 96, 98]
 
-# ax.plot(x_points_resolution, y_points_resolution_sub_minus_one, label="subsampling -1")
-# ax.plot(x_points_resolution, y_points_resolution_sub_zero, label="subsampling 0")
-# ax.plot(x_points_resolution, y_points_resolution_sub_one, label="subsampling 1")
-# ax.plot(x_points_resolution, y_points_resolution_sub_two, label="subsampling 2")
+# ax.plot(x_points_resolution, y_points_resolution_sub_minus_one, "-s", label="subsampling -1")
+# ax.plot(x_points_resolution, y_points_resolution_sub_zero, "-o", label="subsampling 0")
+# ax.plot(x_points_resolution, y_points_resolution_sub_one, "-x", label="subsampling 1")
+# ax.plot(x_points_resolution, y_points_resolution_sub_two, "-|", label="subsampling 2")
 
 # resize
-x_points_resize = [i * 5 for i in range(1, 21)]
-y_points_resize = [4, 40, 64, 73, 78, 86, 89, 93, 92, 96, 93, 95, 94, 96, 96, 95, 95, 98, 97, 98]
+x_points_resize = [i * 5 for i in range(0, 21)]
+y_points_resize = [0, 4, 40, 64, 73, 78, 86, 89, 93, 92, 96, 93, 95, 94, 96, 96, 95, 95, 98, 97, 98]
 
-# ax.plot(x_points_resize, y_points_resize)
+# ax.plot(x_points_resize, y_points_resize, "-x")
 
 # crop
-x_points_crop = [i / 2 for i in range(11, -1, -1)]
-y_points_crop = [0, 1, 1, 2, 2, 2, 5, 7, 15, 34, 48, 98]
+x_points_crop = [i / 2 for i in range(12, -1, -1)]
+y_points_crop = [0, 0, 1, 1, 2, 2, 2, 5, 7, 15, 34, 48, 98]
 
-ax.plot(x_points_crop, y_points_crop)
+# ax.plot(x_points_crop, y_points_crop, "-x")
+
+# rotation
+
+x_points_rotation = [i for i in range(-10, 11, 1)]
+y_points_rotation_expand_false = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 98, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+y_points_rotation_expand_true = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 98, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+# ax.plot(x_points_rotation, y_points_rotation_expand_false, "-o", label="expand = False")
+# ax.plot(x_points_rotation, y_points_rotation_expand_true, "-x", label="expand = True")
+
+# logo
+
+x_points_logo = [i * 5 for i in range(0, 11)]
+y_points_logo = [98, 64, 46, 23, 13, 12, 4, 2, 1, 0, 0]
+
+# ax.plot(x_points_logo, y_points_logo, "-x")
+
+# contrast
+
+x_points_contrast = [i * 10 for i in range(0, 17)]
+y_points_contrast = [0, 12, 40, 53, 69, 76, 81, 85, 86, 86, 98, 34, 10, 3, 1, 0, 0]
+
+# ax.plot(x_points_contrast, y_points_contrast, "-x")
+
+# color
+
+x_points_color = [i * 10 for i in range(0, 31)]
+y_points_color = [41, 47, 51, 56, 61, 70, 80, 75, 78, 80, 98, 75, 72, 58, 63, 57, 52, 46, 45, 39, 40, 36, 33, 30, 24, 21, 19, 18, 16, 13, 16]
+
+# ax.plot(x_points_color, y_points_color, "-x")
+
+# brightness
+
+x_points_brightness = [i * 10 for i in range(0, 17)]
+y_points_brightness = [0, 5, 7, 37, 56, 67, 74, 87, 87, 82, 98, 38, 10, 3, 3, 0, 0]
+
+# ax.plot(x_points_brightness, y_points_brightness, "-x")
+
+# sharpness
+
+x_points_sharpness = [i * 10 for i in range(0, 31)]
+y_points_sharpness = [86, 81, 79, 82, 83, 84, 85, 84, 85, 85, 98, 86, 89, 87, 87, 88, 83, 79, 79, 76, 84, 71, 71, 69, 68, 69, 64, 64, 62, 62, 63]
+
+# ax.plot(x_points_sharpness, y_points_sharpness, "-x")
 
 ax.xaxis.set_major_formatter(mtick.PercentFormatter())
 ax.yaxis.set_major_formatter(mtick.PercentFormatter())
 
-plt.xlabel("Crop amount")
-plt.ylabel("Unchanged hashes")
+# plt.xlabel("Sharpness")
+# plt.ylabel("Unchanged hashes")
 # plt.legend()
-plt.grid(True)
-plt.show()
+# plt.grid(True)
+# plt.show()
 
 
 def conv_to_png():
