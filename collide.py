@@ -62,8 +62,7 @@ def collide(img_path, nnhash, num_iter, blur):
 
             perturbation = image - original
             # image loss: how big / noticeable is the perturbation?
-            img_loss = DEFAULT_W_L2 * tf.nn.l2_loss(perturbation) + DEFAULT_W_TV * \
-                       tf.image.total_variation(perturbation)[0]
+            img_loss = DEFAULT_W_L2 * tf.nn.l2_loss(perturbation) + DEFAULT_W_TV * tf.image.total_variation(perturbation)[0]
 
             # combined loss: try to minimize both at once
             combined_loss = DEFAULT_W_HASH * hash_loss + (1 - DEFAULT_W_HASH) * img_loss

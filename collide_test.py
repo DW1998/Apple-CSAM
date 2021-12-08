@@ -39,7 +39,6 @@ def collide(img_path, nnhash, num_iter, blur):
 
     original = load_image(img_path)
     h = hash_from_hex(nnhash)
-    print(type(h))
 
     with model.graph.as_default():
         with tf.compat.v1.Session() as sess:
@@ -49,7 +48,10 @@ def collide(img_path, nnhash, num_iter, blur):
             # proj is in R^96; it's interpreted as a 96-bit hash by mapping
             # entries < 0 to the bit '0', and entries >= 0 to the bit '1'
             normalized, _ = tf.linalg.normalize(proj)
+            print(normalized)
             hash_output = tf.sigmoid(normalized * DEFAULT_K)
+            print("hash_output1")
+            print(hash_output)
             # now, hash_output has entries in (0, 1); it's interpreted by
             # mapping entries < 0.5 to the bit '0' and entries >= 0.5 to the
             # bit '1'
@@ -61,14 +63,15 @@ def collide(img_path, nnhash, num_iter, blur):
             hash_output = tf.clip_by_value(hash_output, DEFAULT_CLIP_RANGE, 1.0 - DEFAULT_CLIP_RANGE) - 0.5
             hash_output = hash_output * (0.5 / (0.5 - DEFAULT_CLIP_RANGE))
             hash_output = hash_output + 0.5
+            print("hash_output2")
+            print(hash_output)
 
             # hash loss: how far away we are from the target hash
             hash_loss = tf.math.reduce_sum(tf.math.squared_difference(hash_output, h))
 
             perturbation = image - original
             # image loss: how big / noticeable is the perturbation?
-            img_loss = DEFAULT_W_L2 * tf.nn.l2_loss(perturbation) + DEFAULT_W_TV * \
-                       tf.image.total_variation(perturbation)[0]
+            img_loss = DEFAULT_W_L2 * tf.nn.l2_loss(perturbation) + DEFAULT_W_TV * tf.image.total_variation(perturbation)[0]
 
             # combined loss: try to minimize both at once
             combined_loss = DEFAULT_W_HASH * hash_loss + (1 - DEFAULT_W_HASH) * img_loss
@@ -83,8 +86,6 @@ def collide(img_path, nnhash, num_iter, blur):
             x = original
             best = (float('inf'), 0)  # (distance, image quality loss)
             dist = float('inf')
-
-            perfect_collision_list = list()
 
             for i in range(num_iter):
                 # we do an alternating projections style attack here; if we
@@ -135,13 +136,6 @@ def collide(img_path, nnhash, num_iter, blur):
                     loss_v,
                     loss_name
                 ))
-                if nnhash == str(hash_to_hex(hash_output_v)):
-                    perfect_collision_list.append(i + 1)
-            if len(perfect_collision_list) == 0:
-                print("No perfect collision found")
-            else:
-                print("Perfect collisions at:", end=" ")
-                print(perfect_collision_list)
 
 
 def quantize(x):
