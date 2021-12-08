@@ -330,11 +330,11 @@ def calc_avg_offset():
         offset = offset / 100
         out_lines.append(line[:-1] + ", " + str(offset))
         offsets.append(str(offset) + ", ")
-    with open("C:/Git Repos/Apple-CSAM/results_offset.txt", 'w') as f:
+    with open("C:/Git Repos/Apple-CSAM/results_error.txt", 'w') as f:
         for line in out_lines:
             f.write(line)
             f.write('\n')
-    with open("C:/Git Repos/Apple-CSAM/offsets.txt", 'w') as f:
+    with open("C:/Git Repos/Apple-CSAM/error.txt", 'w') as f:
         for o in offsets:
             f.write(o)
     with open("C:/Git Repos/Apple-CSAM/unchanged.txt", 'w') as f:
