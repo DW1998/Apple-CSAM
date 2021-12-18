@@ -2,8 +2,8 @@ import os
 
 from PIL import Image, ImageEnhance
 from collections import Counter
-import matplotlib.pyplot as plt
-import matplotlib.ticker as mtick
+# import matplotlib.pyplot as plt
+# import matplotlib.ticker as mtick
 
 import nnhash
 
@@ -35,7 +35,7 @@ y_points_resolution_error_sub_zero = [6.95, 3.69, 1.23, 0.87, 0.59, 0.49, 0.36, 
 y_points_resolution_error_sub_one = [6.95, 3.7, 1.22, 0.86, 0.56, 0.49, 0.36, 0.34, 0.27, 0.27, 0.29, 0.2, 0.21, 0.12, 0.19, 0.09, 0.07, 0.04, 0.02, 0.03, 0.03]
 y_points_resolution_error_sub_two = [6.89, 3.71, 1.24, 0.85, 0.53, 0.44, 0.35, 0.37, 0.23, 0.28, 0.27, 0.23, 0.21, 0.13, 0.18, 0.12, 0.07, 0.02, 0.04, 0.04, 0.02]
 
-# ax.plot(x_points_resolution, y_points_resolution_sub_minus_one, "-s", label="subsampling -1")
+# ax.plot(x_points_resolution, y_points_resolution_sub_minus_one, "-x", label="subsampling -1")
 # ax.plot(x_points_resolution, y_points_resolution_sub_zero, "-o", label="subsampling 0")
 # ax.plot(x_points_resolution, y_points_resolution_sub_one, "-x", label="subsampling 1")
 # ax.plot(x_points_resolution, y_points_resolution_sub_two, "-|", label="subsampling 2")
@@ -120,7 +120,7 @@ y_points_brightness_error = [46.83, 4.85, 2.52, 1.1, 0.57, 0.45, 0.26, 0.12, 0.1
 # ax.xaxis.set_major_formatter(mtick.PercentFormatter())
 # ax.yaxis.set_major_formatter(mtick.PercentFormatter())
 
-# plt.xlabel("brightness")
+# plt.xlabel("rotation degree")
 # plt.ylabel("average error")
 # plt.ylabel("unchanged hashes")
 # plt.legend()
@@ -328,8 +328,8 @@ def calc_avg_offset():
             y = int(s.split(":")[1][1:])
             offset += x * y
         offset = offset / 100
-        out_lines.append(line[:-1] + ", " + str(offset))
-        offsets.append(str(offset) + ", ")
+        out_lines.append(f"{line[:-1]}, {offset}")
+        offsets.append(f"{offset}, ")
     with open("C:/Git Repos/Apple-CSAM/results_error.txt", 'w') as f:
         for line in out_lines:
             f.write(line)
@@ -339,7 +339,7 @@ def calc_avg_offset():
             f.write(o)
     with open("C:/Git Repos/Apple-CSAM/unchanged.txt", 'w') as f:
         for line in out_lines:
-            f.write(line.split(",")[-2] + ",")
+            f.write(f"{line.split(',')[-2]},")
     print("printed offset to txt file")
 
 

@@ -2,7 +2,6 @@
 
 import tensorflow as tf
 from scipy.ndimage.filters import gaussian_filter
-import argparse
 import os
 
 import util
@@ -153,28 +152,3 @@ def blur_perturbation(original, x, sigma):
 
 def gaussian_filter_by_channel(x, sigma):
     return np.stack([gaussian_filter(x[0, ch, :, :], sigma) for ch in range(x.shape[1])])[np.newaxis]
-
-
-def get_options():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--image', type=str, help='path to starting image', required=True)
-    parser.add_argument('--model', type=str, help='path to model', default=DEFAULT_MODEL_PATH)
-    parser.add_argument('--seed', type=str, help='path to seed', default=DEFAULT_SEED_PATH)
-    parser.add_argument('--target', type=str, help='target hash', default=DEFAULT_TARGET_HASH)
-    parser.add_argument('--learning-rate', type=float, help='learning rate', default=DEFAULT_LR)
-    parser.add_argument('--combined-threshold', type=int, help='threshold to start using combined loss',
-                        default=DEFAULT_COMBINED_THRESHOLD)
-    parser.add_argument('--k', type=float, help='k parameter', default=DEFAULT_K)
-    parser.add_argument('--l2-weight', type=float, help='perturbation l2 loss weight', default=DEFAULT_W_L2)
-    parser.add_argument('--tv-weight', type=float, help='perturbation total variation loss weight',
-                        default=DEFAULT_W_TV)
-    parser.add_argument('--hash-weight', type=float, help='relative weight (0.0 to 1.0) of hash in combined loss',
-                        default=DEFAULT_W_HASH)
-    parser.add_argument('--clip-range', type=float, help='clip range parameter', default=DEFAULT_CLIP_RANGE)
-    parser.add_argument('--iterations', type=int, help='max number of iterations', default=DEFAULT_ITERATIONS)
-    parser.add_argument('--save-directory', type=str, help='directory to save output images', default='.')
-    parser.add_argument('--save-iterations', type=int, help='save this frequently, regardless of improvement',
-                        default=DEFAULT_SAVE_ITERATIONS)
-    parser.add_argument('--blur', type=float, help='apply Gaussian blur with this sigma on every step',
-                        default=DEFAULT_BLUR)
-    return parser.parse_args()
