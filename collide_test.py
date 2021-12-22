@@ -3,6 +3,10 @@ import sys
 from itertools import chain
 from statistics import mean
 
+import numpy as np
+from PIL import Image
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
 import tensorflow as tf
 from scipy.ndimage.filters import gaussian_filter
 import argparse
@@ -31,6 +35,63 @@ collide_dir = "D:/Apple-CSAM-Files/Collide-Attacks/"
 collide_img_dir = collide_dir + "Collide-Images/"
 target_img_dir = collide_dir + "Target-Images/"
 attack_dir = collide_dir + "Attacks/"
+combine_dir = collide_dir + "Combine-Outputs/"
+
+# plot
+# fig, ax = plt.subplots()
+
+x_points = [1]
+for l in range(1, 41):
+    x_points.append(l * 25)
+
+# K
+K_x = [l for l in range(5, 21)]
+K_1000 = [4.54, 4.78, 3.84, 3.54, 3.5, 3.42, 3.48, 3.18, 3.48, 3.46, 3.0, 3.2, 3.22, 3.34, 3.52, 3.62]
+K_h = [13, 13, 16, 19, 22, 22, 22, 26, 27, 25, 27, 30, 31, 29, 27, 27]
+K_h_p = [l * 2 for l in K_h]
+K_a = [352.769, 348.462, 436.938, 465.368, 430.318, 405.318, 382.818, 375.231, 350.37, 297.2, 348.519, 333.933, 287.806, 306.966, 284.481, 279.444]
+
+# ax.plot(K_x, K_1000, "-x")
+# ax.plot(K_x, K_h_p, "-x")
+
+# LR
+LR_x = [l / 4 for l in range(4, 13)]
+LR_1000 = [4.32, 3.9, 3.66, 3.62, 3.42, 3.26, 3.28, 3.24, 3.24]
+LR_h = [16, 20, 21, 22, 22, 21, 23, 25, 23]
+LR_h_p = [l * 2 for l in LR_h]
+LR_a = [511.312, 493.8, 475.381, 429.136, 405.318, 360.714, 354.13, 365.2, 351.435]
+
+# ax.plot(LR_x, LR_1000, "-x")
+# ax.plot(LR_x, LR_h_p, "-x")
+
+# CLIP_R
+CLIP_R_x = [l / 10 for l in range(5)]
+CLIP_R_1000 = [3.6, 3.42, 3.52, 5.22, 9.32]
+CLIP_R_h = [20, 22, 28, 27, 13]
+CLIP_R_h_p = [l * 2 for l in CLIP_R_h]
+CLIP_R_a = [466.8, 405.318, 377.143, 330.037, 312.0]
+
+# ax.plot(CLIP_R_x, CLIP_R_1000, "-x")
+# ax.plot(CLIP_R_x, CLIP_R_h_p, "-x")
+
+# Blur
+Blur_x = [l / 4 for l in range(5)]
+Blur_1000 = [3.42, 3.74, 6.76, 8.24, 10.5]
+Blur_h = [22, 18, 8, 7, 4]
+Blur_h_p = [l * 2 for l in Blur_h]
+Blur_a = [405.318, 397.833, 568.375, 618.714, 635.75]
+
+# ax.plot(Blur_x, Blur_1000, "-x")
+# ax.plot(Blur_x, Blur_h_p, "-x")
+
+# ax.yaxis.set_major_formatter(mtick.PercentFormatter())
+
+# plt.xlabel("blur")
+# plt.ylabel("average difference at i=1000")
+# plt.ylabel("collisions at i=1000")
+# plt.legend()
+# plt.grid(True)
+# plt.show()
 
 
 def collide(img_path, t_hash, num_iter, save_iter, lr, comb_t, k, clip_r, w_l2, w_tv, w_hash, blur, t_img, c_img, folder):
@@ -52,10 +113,7 @@ def collide(img_path, t_hash, num_iter, save_iter, lr, comb_t, k, clip_r, w_l2, 
             # proj is in R^96; it's interpreted as a 96-bit hash by mapping
             # entries < 0 to the bit '0', and entries >= 0 to the bit '1'
             normalized, _ = tf.linalg.normalize(proj)
-            # print(normalized)
             hash_output = tf.sigmoid(normalized * k)
-            # print("hash_output1")
-            # print(hash_output)
             # now, hash_output has entries in (0, 1); it's interpreted by
             # mapping entries < 0.5 to the bit '0' and entries >= 0.5 to the
             # bit '1'
@@ -67,19 +125,11 @@ def collide(img_path, t_hash, num_iter, save_iter, lr, comb_t, k, clip_r, w_l2, 
             hash_output = tf.clip_by_value(hash_output, clip_r, 1.0 - clip_r) - 0.5
             hash_output = hash_output * (0.5 / (0.5 - clip_r))
             hash_output = hash_output + 0.5
-            # print("hash_output2")
-            # print(hash_output)
-            # print("h")
-            # print(h)
 
             # hash loss: how far away we are from the target hash
             hash_loss = tf.math.reduce_sum(tf.math.squared_difference(hash_output, h))
 
             perturbation = image - original
-            # print("image")
-            # print(image)
-            # print("original")
-            # print(original)
             # image loss: how big / noticeable is the perturbation?
             img_loss = w_l2 * tf.nn.l2_loss(perturbation) + w_tv * tf.image.total_variation(perturbation)[0]
 
@@ -209,34 +259,44 @@ def test_collide():
         t_hash = nnhash.calc_nnhash(target_img_dir + t_img)
         for c_img in os.listdir(collide_img_dir):
             c_img_path = collide_img_dir + c_img
-            collide(c_img_path, t_hash, 1000, 25, DEFAULT_LR, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
-                    DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
-                    t_img.split(".")[0], c_img.split(".")[0], "Default")
-            range_K = chain(range(5, 10), range(11, 21))
-            for i in range_K:
-                s = f"K{i}"
-                collide(c_img_path, t_hash, 1000, 25, DEFAULT_LR, DEFAULT_COMBINED_THRESHOLD, i,
-                        DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
-                        t_img.split(".")[0], c_img.split(".")[0], s)
-            range_LR = chain(range(4, 8), range(9, 13))
-            for i in range_LR:
-                j = float(i / 4)
+            # collide(c_img_path, t_hash, 1000, 25, DEFAULT_LR, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
+            #        DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+            #        t_img.split(".")[0], c_img.split(".")[0], "Default")
+            # range_K = chain(range(5, 10), range(11, 21))
+            # for i in range_K:
+            #    s = f"K{i}"
+            #    collide(c_img_path, t_hash, 1000, 25, DEFAULT_LR, DEFAULT_COMBINED_THRESHOLD, i,
+            #            DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+            #            t_img.split(".")[0], c_img.split(".")[0], s)
+            # range_LR = chain(range(4, 8), range(9, 13))
+            # range_LR2 = range(13, 17)
+            # range_LR3 = range(17, 25)
+            range_LR4 = range(7, 11)
+            for i in range_LR4:
+                j = float(i)
                 s = f"LR{j}"
                 collide(c_img_path, t_hash, 1000, 25, j, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
                         DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
                         t_img.split(".")[0], c_img.split(".")[0], s)
-            range_Comb_T0 = chain(range(0, 2), range(3, 5))
-            for i in range_Comb_T0:
-                s = f"Comb_TO{i}"
-                collide(c_img_path, t_hash, 1000, 25, DEFAULT_LR, i, DEFAULT_K,
-                        DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
-                        t_img.split(".")[0], c_img.split(".")[0], s)
-            for i in range(1, 5):
-                j = float(i / 4)
-                s = f"Blur{j}"
-                collide(c_img_path, t_hash, 1000, 25, DEFAULT_LR, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
-                        DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, j,
-                        t_img.split(".")[0], c_img.split(".")[0], s)
+            # range_Comb_T0 = chain(range(0, 2), range(3, 5))
+            # for i in range_Comb_T0:
+            #    s = f"Comb_T{i}"
+            #    collide(c_img_path, t_hash, 1000, 25, DEFAULT_LR, i, DEFAULT_K,
+            #            DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+            #            t_img.split(".")[0], c_img.split(".")[0], s)
+            # for i in range(1, 5):
+            #    j = float(i / 4)
+            #    s = f"Blur{j}"
+            #    collide(c_img_path, t_hash, 1000, 25, DEFAULT_LR, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
+            #            DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, j,
+            #            t_img.split(".")[0], c_img.split(".")[0], s)
+            # range_Clip_R = chain(range(0, 1), range(2, 5))
+            # for i in range_Clip_R:
+            #    j = float(i / 10)
+            #    s = f"Clip_R{j}"
+            #    collide(c_img_path, t_hash, 1000, 25, DEFAULT_LR, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
+            #            j, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+            #            t_img.split(".")[0], c_img.split(".")[0], s)
 
 
 def set_key(dictionary, key, value_dist, value_loss):
@@ -247,6 +307,16 @@ def set_key(dictionary, key, value_dist, value_loss):
     else:
         dictionary[key][0].append(int(value_dist))
         dictionary[key][1].append(float(value_loss))
+
+
+def set_key2(dictionary, key, value_dist, value_loss):
+    if key not in dictionary:
+        dictionary[key] = (list(), list())
+        dictionary[key][0].append(value_dist)
+        dictionary[key][1].append(value_loss)
+    else:
+        dictionary[key][0].append(value_dist)
+        dictionary[key][1].append(value_loss)
 
 
 def calc_avg():
@@ -262,7 +332,7 @@ def calc_avg():
                         set_key(dict_avg, data[3][1:-1], data[1][1:], data[2][1:])
         with open(f"{base_folder}output_average.txt", 'w') as f:
             for k, v in dict_avg.items():
-                f.write(f"{k}: {mean(v[0])}, {mean(v[1]):.4f}")
+                f.write(f"{k}: {mean(v[0]):.3f}, {mean(v[1]):.3f}")
                 f.write('\n')
     calc_hits()
 
@@ -289,13 +359,56 @@ def calc_hits():
                         hits_iterations.append(best_iter)
         if hits > 0:
             with open(f"{base_folder}output_average.txt", 'a+') as f:
-                f.write(f"hits:{hits}, avg_iter:{mean(hits_iterations)}")
+                f.write(f"hits:{hits}, avg_iter:{mean(hits_iterations):.3f}")
                 f.write('\n')
+
+
+def combine_outputs(name):
+    combined = list()
+    for txt_file in os.listdir(combine_dir):
+        if txt_file.endswith(".txt"):
+            lst1 = list()
+            lst2 = list()
+            lst1.append(f"{txt_file}_1")
+            lst2.append(f"{txt_file}_2")
+            with open(f"{combine_dir}{txt_file}", 'r') as f:
+                lines = f.readlines()
+                for line in lines:
+                    data_h = line.split(':')
+                    if data_h[0] == "hits":
+                        val_h = data_h[1].split(',')[0]
+                        val_a = data_h[2][:-1]
+                        lst1.append(int(val_h))
+                        lst2.append(float(val_a))
+                    else:
+                        values = line.split(':')[1].split(',')
+                        val_d = values[0][1:]
+                        val_l = values[1][1:][:-1]
+                        lst1.append(float(val_d))
+                        lst2.append(float(val_l))
+            combined.append(lst1)
+            combined.append(lst2)
+    with open(f"{combine_dir}Results/{name}.txt", 'w') as f:
+        for line in combined:
+            f.write(str(line))
+            f.write('\n')
+
+
+def test():
+    img = "D:/Apple-CSAM-Files/Collide-Attacks/Collide-Images/Man4.jpg"
+    t_hash = nnhash.calc_nnhash("D:/Apple-CSAM-Files/Collide-Attacks/Target-Images/Child1.jpg")
+    collide(img, t_hash, 10, DEFAULT_SAVE_ITERATIONS, DEFAULT_LR,
+            DEFAULT_COMBINED_THRESHOLD, DEFAULT_K, DEFAULT_CLIP_RANGE, DEFAULT_W_L2,
+            DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR, "Test", "Test", "Test")
+
+
+def test2():
+    pass
 
 
 if __name__ == '__main__':
     pass
-    # test_collide()
-    calc_avg()
-    # collide(DEFAULT_IMG_PATH, DEFAULT_NNHASH, DEFAULT_ITERATIONS, DEFAULT_SAVE_ITERATIONS, DEFAULT_LR, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K, DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR)
+    test_collide()
+    # calc_avg()
+    # combine_outputs("Blur")
     # test()

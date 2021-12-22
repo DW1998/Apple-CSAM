@@ -2,8 +2,8 @@ import os
 
 from PIL import Image, ImageEnhance
 from collections import Counter
-# import matplotlib.pyplot as plt
-# import matplotlib.ticker as mtick
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
 
 import nnhash
 
@@ -121,7 +121,7 @@ y_points_brightness_error = [46.83, 4.85, 2.52, 1.1, 0.57, 0.45, 0.26, 0.12, 0.1
 # ax.yaxis.set_major_formatter(mtick.PercentFormatter())
 
 # plt.xlabel("rotation degree")
-# plt.ylabel("average error")
+# plt.ylabel("average difference")
 # plt.ylabel("unchanged hashes")
 # plt.legend()
 # plt.grid(True)
@@ -142,7 +142,7 @@ def conv_to_png():
 
 
 def generate_and_compare_resolution(res, sub):
-    result_dir = resolution_dir + "Subsampling=" + str(sub) + "/res" + str(res) + "/"
+    result_dir = f"{resolution_dir}Subsampling={sub}/res{res}/"
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
         # print("created folder %s" % result_dir)
