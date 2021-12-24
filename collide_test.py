@@ -271,13 +271,28 @@ def test_collide():
             # range_LR = chain(range(4, 8), range(9, 13))
             # range_LR2 = range(13, 17)
             # range_LR3 = range(17, 25)
-            range_LR4 = range(7, 11)
-            for i in range_LR4:
-                j = float(i)
-                s = f"LR{j}"
-                collide(c_img_path, t_hash, 1000, 25, j, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
-                        DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
-                        t_img.split(".")[0], c_img.split(".")[0], s)
+            # range_LR4 = range(7, 11)
+            # for i in range_LR4:
+            #    j = float(i)
+            #    s = f"LR{j}"
+            #    collide(c_img_path, t_hash, 1000, 25, j, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
+            #            DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+            #            t_img.split(".")[0], c_img.split(".")[0], s)
+            collide(c_img_path, t_hash, 1000, 25, 0.5, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
+                    DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+                    t_img.split(".")[0], c_img.split(".")[0], "LR0.5")
+            collide(c_img_path, t_hash, 1000, 25, 6.5, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
+                    DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+                    t_img.split(".")[0], c_img.split(".")[0], "LR6.5")
+            collide(c_img_path, t_hash, 1000, 25, 7.5, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
+                    DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+                    t_img.split(".")[0], c_img.split(".")[0], "LR7.5")
+            collide(c_img_path, t_hash, 1000, 25, 8.5, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
+                    DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+                    t_img.split(".")[0], c_img.split(".")[0], "LR8.5")
+            collide(c_img_path, t_hash, 1000, 25, 9.5, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
+                    DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+                    t_img.split(".")[0], c_img.split(".")[0], "LR9.5")
             # range_Comb_T0 = chain(range(0, 2), range(3, 5))
             # for i in range_Comb_T0:
             #    s = f"Comb_T{i}"
@@ -408,7 +423,7 @@ def test2():
 
 if __name__ == '__main__':
     pass
-    test_collide()
-    # calc_avg()
+    # test_collide()
+    calc_avg()
     # combine_outputs("Blur")
     # test()
