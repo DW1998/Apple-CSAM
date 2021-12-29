@@ -49,17 +49,20 @@ K_x = [l for l in range(5, 21)]
 K_1000 = [4.54, 4.78, 3.84, 3.54, 3.5, 3.42, 3.48, 3.18, 3.48, 3.46, 3.0, 3.2, 3.22, 3.34, 3.52, 3.62]
 K_h = [13, 13, 16, 19, 22, 22, 22, 26, 27, 25, 27, 30, 31, 29, 27, 27]
 K_h_p = [l * 2 for l in K_h]
-K_a = [352.769, 348.462, 436.938, 465.368, 430.318, 405.318, 382.818, 375.231, 350.37, 297.2, 348.519, 333.933, 287.806, 306.966, 284.481, 279.444]
+K_a = [352.769, 348.462, 436.938, 465.368, 430.318, 405.318, 382.818, 375.231, 350.37, 297.2, 348.519, 333.933, 287.806,
+       306.966, 284.481, 279.444]
 
 # ax.plot(K_x, K_1000, "-x")
 # ax.plot(K_x, K_h_p, "-x")
 
 # LR
 LR_x = [l / 2 for l in range(1, 21)]
-LR_1000 = [6.12, 4.32, 3.66, 3.42, 3.28, 3.24, 3.0, 2.94, 2.98, 2.98, 3.0, 2.82, 2.72, 2.9, 2.8, 2.9, 2.68, 2.82, 2.82, 3.0]
+LR_1000 = [6.12, 4.32, 3.66, 3.42, 3.28, 3.24, 3.0, 2.94, 2.98, 2.98, 3.0, 2.82, 2.72, 2.9, 2.8, 2.9, 2.68, 2.82, 2.82,
+           3.0]
 LR_h = [9, 16, 21, 22, 23, 23, 27, 29, 26, 26, 26, 30, 27, 26, 28, 26, 29, 28, 29, 26]
 LR_h_p = [l * 2 for l in LR_h]
-LR_a = [540.778, 511.312, 475.381, 405.318, 354.13, 351.435, 342.889, 330.103, 298.846, 296.885, 335.5, 297.0, 296.37, 270.385, 278.393, 259.346, 283.448, 303.571, 272.724, 227.615]
+LR_a = [540.778, 511.312, 475.381, 405.318, 354.13, 351.435, 342.889, 330.103, 298.846, 296.885, 335.5, 297.0, 296.37,
+        270.385, 278.393, 259.346, 283.448, 303.571, 272.724, 227.615]
 
 # ax.plot(LR_x, LR_1000, "-x")
 # ax.plot(LR_x, LR_h_p, "-x")
@@ -81,6 +84,7 @@ Blur_h = [22, 18, 8, 7, 4]
 Blur_h_p = [l * 2 for l in Blur_h]
 Blur_a = [405.318, 397.833, 568.375, 618.714, 635.75]
 
+
 # ax.plot(Blur_x, Blur_1000, "-x")
 # ax.plot(Blur_x, Blur_h_p, "-x")
 
@@ -93,14 +97,9 @@ Blur_a = [405.318, 397.833, 568.375, 618.714, 635.75]
 # plt.grid(True)
 # plt.show()
 
-# best values for difference:
-# blur = 0.0, clip range = 0.1, k = 15, lr = 8.5
 
-# best values for collisions:
-# blur = 0.0, clip range = 0.2, k = 17, lr = 6.0
-
-
-def collide(img_path, t_hash, num_iter, save_iter, lr, comb_t, k, clip_r, w_l2, w_tv, w_hash, blur, t_img, c_img, folder):
+def collide(img_path, t_hash, num_iter, save_iter, lr, comb_t, k, clip_r, w_l2, w_tv, w_hash, blur, t_img, c_img,
+            folder):
     tf.compat.v1.disable_eager_execution()
 
     model = load_model(DEFAULT_MODEL_PATH)
@@ -300,6 +299,28 @@ def test_collide():
             #    collide(c_img_path, t_hash, 1000, 25, DEFAULT_LR, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
             #            j, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
             #            t_img.split(".")[0], c_img.split(".")[0], s)
+            collide(c_img_path, t_hash, 1000, 25, 8.5, DEFAULT_COMBINED_THRESHOLD, 15,
+                    DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+                    t_img.split(".")[0], c_img.split(".")[0], "K+LR_dif")
+            collide(c_img_path, t_hash, 1000, 25, DEFAULT_LR, DEFAULT_COMBINED_THRESHOLD, 17,
+                    0.2, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+                    t_img.split(".")[0], c_img.split(".")[0], "Clip_R+K_col")
+            collide(c_img_path, t_hash, 1000, 25, 6, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
+                    0.2, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+                    t_img.split(".")[0], c_img.split(".")[0], "Clip_R+LR_col")
+            collide(c_img_path, t_hash, 1000, 25, 6, DEFAULT_COMBINED_THRESHOLD, 17,
+                    DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+                    t_img.split(".")[0], c_img.split(".")[0], "K+LR_col")
+            collide(c_img_path, t_hash, 1000, 25, 6, DEFAULT_COMBINED_THRESHOLD, 17,
+                    0.2, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+                    t_img.split(".")[0], c_img.split(".")[0], "Clip_R+K+LR_col")
+
+
+# best values for difference:
+# blur = 0.0, clip range = 0.1, k = 15, lr = 8.5
+
+# best values for collisions:
+# blur = 0.0, clip range = 0.2, k = 17, lr = 6.0
 
 
 def set_key(dictionary, key, value_dist, value_loss):
@@ -412,6 +433,6 @@ def test2():
 if __name__ == '__main__':
     pass
     # test_collide()
-    # calc_avg()
+    calc_avg()
     # combine_outputs("Clip_R")
     # test()
