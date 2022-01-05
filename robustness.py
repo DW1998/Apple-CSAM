@@ -4,6 +4,7 @@ from PIL import Image, ImageEnhance
 from collections import Counter
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
+from scipy.stats import linregress
 
 import nnhash
 
@@ -59,6 +60,10 @@ y_points_resize_error = [4.79, 1.16, 0.56, 0.36, 0.24, 0.16, 0.12, 0.08, 0.08, 0
 x_points_crop = [i / 4 for i in range(20, -1, -1)]
 y_points_crop = [0, 1, 1, 1, 2, 2, 2, 3, 2, 3, 5, 5, 7, 11, 14, 20, 32, 41, 48, 75, 100]
 y_points_crop_error = [5.97, 5.64, 5.46, 5.21, 4.91, 4.69, 4.39, 4.02, 3.77, 3.54, 3.19, 2.83, 2.54, 2.26, 1.96, 1.69, 1.34, 1.1, 0.87, 0.34, 0.0]
+
+# b, a, r, p, std = linregress(x_points_crop, y_points_crop_error)
+
+# print(b, a, r, p, std)
 
 # ax.plot(x_points_crop, y_points_crop, "-x")
 # ax.plot(x_points_crop, y_points_crop_error, "-x")

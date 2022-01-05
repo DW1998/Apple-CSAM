@@ -40,9 +40,48 @@ combine_dir = collide_dir + "Combine-Outputs/"
 # plot
 # fig, ax = plt.subplots()
 
+# Comparing
 x_points = [1]
 for l in range(1, 41):
     x_points.append(l * 25)
+
+y_points_default = [47.88, 28.96, 20.3, 15.4, 12.6, 10.74, 9.34, 8.56, 8.0, 7.42, 7.0, 6.62, 6.34, 6.06, 5.8, 5.6, 5.32,
+                    5.12, 4.94, 4.82,
+                    4.7, 4.44, 4.26, 4.16, 4.12, 4.06, 3.96, 3.94, 3.88, 3.88, 3.84, 3.76, 3.74, 3.68, 3.64, 3.56, 3.52,
+                    3.5, 3.44, 3.42, 3.42]
+
+y_points_k = [47.88, 27.82, 19.5, 14.58, 11.84, 9.9, 8.56, 7.68, 7.14, 6.68, 6.26, 6.0, 5.74, 5.48, 5.18, 5.02, 4.96,
+              4.78, 4.66, 4.48,
+              4.28, 4.14, 4.1, 4.06, 4.04, 3.94, 3.94, 3.92, 3.82, 3.68, 3.66, 3.64, 3.52, 3.44, 3.28, 3.22, 3.16, 3.06,
+              3.04, 3.02, 3.0]
+
+y_points_lr = [47.88, 15.92, 10.08, 7.9, 6.6, 5.84, 5.24, 4.86, 4.46, 4.12, 3.88, 3.7, 3.62, 3.6, 3.38, 3.28, 3.24,
+               3.14, 3.12, 3.12,
+               3.04, 3.0, 2.98, 2.96, 2.94, 2.92, 2.9, 2.9, 2.86, 2.84, 2.84, 2.84, 2.84, 2.8, 2.8, 2.76, 2.76, 2.76,
+               2.72, 2.68, 2.68]
+
+y_points_combined_dif = [47.88, 16.2, 10.26, 7.64, 6.22, 5.46, 4.86, 4.48, 4.18, 3.96, 3.78, 3.62, 3.38, 3.22, 3.16,
+                         3.1, 3.06, 3.04, 3.0, 2.98,
+                         2.96, 2.94, 2.9, 2.7, 2.66, 2.64, 2.6, 2.58, 2.58, 2.58, 2.56, 2.52, 2.42, 2.42, 2.4, 2.38,
+                         2.38, 2.36, 2.36, 2.34, 2.3]
+
+y_points_default_blur1 = [47.88, 35.26, 29.72, 26.24, 22.96, 21.12, 19.74, 18.4, 17.42, 16.82, 16.08, 15.56, 15.16,
+                          14.82, 14.34, 13.98, 13.6, 13.38, 13.16, 13.08, 12.98, 12.76, 12.66, 12.38, 12.22, 12.14,
+                          11.9, 11.66, 11.38, 11.3, 11.22, 11.2, 11.12, 10.98, 10.86, 10.74, 10.7, 10.62, 10.56, 10.52,
+                          10.5]
+
+y_points_combined_dif_blur1 = [47.88, 20.42, 14.36, 11.8, 10.44, 9.86, 9.1, 8.48, 8.0, 7.52, 7.3, 7.02, 6.68, 6.52,
+                               6.38, 6.08, 5.82, 5.66, 5.48, 5.36, 5.32, 5.1, 4.98, 4.94, 4.8, 4.64, 4.46, 4.42,
+                               4.34, 4.34, 4.32, 4.22, 4.1, 4.06, 4.04, 3.88, 3.86, 3.76, 3.7, 3.7, 3.7]
+
+# ax.plot(x_points, y_points_default, "-x", label="Default")
+# ax.plot(x_points, y_points_k, "-x", label="k")
+# ax.plot(x_points, y_points_lr, "-x", label="Lernrate")
+#
+
+# ax.plot(x_points, y_points_default_blur1, "-x", label="Default + Blur = 1.0")
+# ax.plot(x_points, y_points_combined_dif_blur1, "-x", label="Optimiert + Blur = 1.0")
+
 
 # K
 K_x = [l for l in range(5, 21)]
@@ -84,15 +123,27 @@ Blur_h = [22, 18, 8, 7, 4]
 Blur_h_p = [l * 2 for l in Blur_h]
 Blur_a = [405.318, 397.833, 568.375, 618.714, 635.75]
 
+Blur_1000_combined_dif = [2.3, 2.36, 2.62, 3.18, 3.7]
+Blur_h_combined_dif = [38, 38, 31, 27, 20]
+Blur_h_p_combined_dif = [l * 2 for l in Blur_h_combined_dif]
+
 
 # ax.plot(Blur_x, Blur_1000, "-x")
 # ax.plot(Blur_x, Blur_h_p, "-x")
 
+# ax.plot(Blur_x, Blur_1000, "-x", label="Default")
+# ax.plot(Blur_x, Blur_h_p, "-x", label="Default")
+
+# ax.plot(Blur_x, Blur_1000_combined_dif, "-x", label="Optimiert")
+# ax.plot(Blur_x, Blur_h_p_combined_dif, "-x", label="Optimiert")
+
 # ax.yaxis.set_major_formatter(mtick.PercentFormatter())
 
-# plt.xlabel("clip range")
-# plt.ylabel("average difference at i=1000")
-# plt.ylabel("collisions at i=1000")
+# plt.xlabel("Blur")
+# plt.xlabel("Iterationen")
+# plt.ylabel("Durchschnittliche Abweichung")
+# plt.ylabel("Durchschnittliche Abweichung bei i=1000")
+# plt.ylabel("Kollisionen bei i=1000")
 # plt.legend()
 # plt.grid(True)
 # plt.show()
@@ -299,21 +350,27 @@ def test_collide():
             #    collide(c_img_path, t_hash, 1000, 25, DEFAULT_LR, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
             #            j, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
             #            t_img.split(".")[0], c_img.split(".")[0], s)
-            collide(c_img_path, t_hash, 1000, 25, 8.5, DEFAULT_COMBINED_THRESHOLD, 15,
-                    DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
-                    t_img.split(".")[0], c_img.split(".")[0], "K+LR_dif")
-            collide(c_img_path, t_hash, 1000, 25, DEFAULT_LR, DEFAULT_COMBINED_THRESHOLD, 17,
-                    0.2, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
-                    t_img.split(".")[0], c_img.split(".")[0], "Clip_R+K_col")
-            collide(c_img_path, t_hash, 1000, 25, 6, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
-                    0.2, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
-                    t_img.split(".")[0], c_img.split(".")[0], "Clip_R+LR_col")
-            collide(c_img_path, t_hash, 1000, 25, 6, DEFAULT_COMBINED_THRESHOLD, 17,
-                    DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
-                    t_img.split(".")[0], c_img.split(".")[0], "K+LR_col")
-            collide(c_img_path, t_hash, 1000, 25, 6, DEFAULT_COMBINED_THRESHOLD, 17,
-                    0.2, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
-                    t_img.split(".")[0], c_img.split(".")[0], "Clip_R+K+LR_col")
+            # collide(c_img_path, t_hash, 1000, 25, 8.5, DEFAULT_COMBINED_THRESHOLD, 15,
+            #        DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+            #        t_img.split(".")[0], c_img.split(".")[0], "K+LR_dif")
+            # collide(c_img_path, t_hash, 1000, 25, DEFAULT_LR, DEFAULT_COMBINED_THRESHOLD, 17,
+            #        0.2, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+            #        t_img.split(".")[0], c_img.split(".")[0], "Clip_R+K_col")
+            # collide(c_img_path, t_hash, 1000, 25, 6, DEFAULT_COMBINED_THRESHOLD, DEFAULT_K,
+            #        0.2, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+            #        t_img.split(".")[0], c_img.split(".")[0], "Clip_R+LR_col")
+            # collide(c_img_path, t_hash, 1000, 25, 6, DEFAULT_COMBINED_THRESHOLD, 17,
+            #        DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+            #        t_img.split(".")[0], c_img.split(".")[0], "K+LR_col")
+            # collide(c_img_path, t_hash, 1000, 25, 6, DEFAULT_COMBINED_THRESHOLD, 17,
+            #        0.2, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, DEFAULT_BLUR,
+            #        t_img.split(".")[0], c_img.split(".")[0], "Clip_R+K+LR_col")
+            for i in range(1, 5):
+                j = float(i / 4)
+                s = f"K+LR_dif+Blur{j}"
+                collide(c_img_path, t_hash, 1000, 25, 8.5, DEFAULT_COMBINED_THRESHOLD, 15,
+                        DEFAULT_CLIP_RANGE, DEFAULT_W_L2, DEFAULT_W_TV, DEFAULT_W_HASH, j,
+                        t_img.split(".")[0], c_img.split(".")[0], s)
 
 
 # best values for difference:
@@ -433,6 +490,6 @@ def test2():
 if __name__ == '__main__':
     pass
     # test_collide()
-    calc_avg()
-    # combine_outputs("Clip_R")
+    # calc_avg()
+    # combine_outputs("Combined_dif+Blur")
     # test()
