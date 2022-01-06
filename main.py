@@ -16,7 +16,7 @@ def save_object(obj, path):
     try:
         with open(path, "wb") as f:
             pickle.dump(obj, f, protocol=pickle.HIGHEST_PROTOCOL)
-            print("saved to %s" % path)
+            print(f"saved to {path}")
     except Exception as e:
         print("Error during pickling object:", e)
 
@@ -43,15 +43,15 @@ else:
     try:
         shutil.rmtree(util.clients_dir)
         os.mkdir(util.clients_dir, 0o777)
-        print("Deleted contents in folder %s" % util.clients_dir)
+        print(f"Deleted contents in folder {util.clients_dir}%s")
     except Exception as exe:
-        print("Failed to delete %s because of %s" % (util.clients_dir, exe))
+        print(f"Failed to delete {util.clients_dir} because of {exe}")
     try:
         shutil.rmtree(util.dec_img_dir)
         os.mkdir(util.dec_img_dir, 0o777)
-        print("Deleted contents in folder %s" % util.dec_img_dir)
+        print(f"Deleted contents in folder {util.dec_img_dir}")
     except Exception as exe:
-        print("Failed to delete %s because of %s" % (util.dec_img_dir, exe))
+        print(f"Failed to delete {util.dec_img_dir} because of {exe}")
 
 collide_management_column = [
     [
@@ -120,7 +120,6 @@ file_list_column = [
         sg.Button("Upload")
     ],
     [
-        sg.Button("Send Synth Voucher"),
         sg.Button("Process Vouchers"),
         sg.Button("Show Neural Hash")
     ],
@@ -209,7 +208,7 @@ while True:
         else:
             dst_name = util.clients_dir + values["-CLIENT LIST-"][0] + "/" + values["-FILE LIST-"][0]
             copyfile(filename, dst_name)
-            print("uploaded file from %s to %s" % (filename, dst_name))
+            print(f"uploaded file from {filename} to {dst_name}")
             with open(dst_name, "rb") as imageFile:
                 byte_arr = bytearray(imageFile.read())
             triple = Triple(nnhash.calc_nnhash(dst_name), server.cur_id, byte_arr)
@@ -218,14 +217,6 @@ while True:
             server.client_list[index].add_triple(triple)
     elif event == "Process Vouchers":
         server.process_vouchers()
-    elif event == "Send Synth Voucher":
-        if len(values["-CLIENT LIST-"]) == 0:
-            print("need to select client")
-        else:
-            triple = Triple(None, server.cur_id, None)
-            server.inc_cur_id()
-            index = server.client_id_list.index(values["-CLIENT LIST-"][0])
-            server.client_list[index].add_triple(triple)
     elif event == "Show Neural Hash":
         if len(values["-FILE LIST-"]) == 0:
             print("need to select file")
@@ -253,15 +244,15 @@ while True:
         elif len(targ_hash) == 0:
             print("need to select a target hash")
         else:
-            print("starting collision on target hash %s with image %s, (iterations: %s, blur: %s)" % (targ_hash, col_img, num_iter, blur))
+            print(f"starting collision on target hash {targ_hash} with image {col_img}, (iterations: {num_iter}, blur: {blur})")
             collide.collide(col_img, targ_hash, num_iter, blur)
     elif event == "Clear Collision Directory":
         try:
             shutil.rmtree(util.collide_dir)
             os.mkdir(util.collide_dir, 0o777)
-            print("Deleted contents in folder %s" % util.collide_dir)
+            print(f"Deleted contents in folder {util.collide_dir}")
         except Exception as ex:
-            print("Failed to delete %s because of %s" % (util.collide_dir, ex))
+            print(f"Failed to delete {util.collide_dir} because of {ex}")
     elif event == "Select as Hash 1":
         if len(values["-FILE LIST-"]) == 0:
             print("need to select file")

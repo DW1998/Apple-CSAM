@@ -37,7 +37,6 @@ class Server:
         self.cuckoo = list()
         self.create_cuckoo_table()
         self.alpha = random.randint(0, util.ecc_q)
-        print("alpha: %s" % self.alpha)
         self.L = (int((self.alpha * util.ecc_gen).x), int((self.alpha * util.ecc_gen).y))
         self.pdata = self.calc_pdata()
 
@@ -46,15 +45,15 @@ class Server:
             self.client_list.append(client)
             self.client_id_list.append(client.id)
             self.client_voucher_list.append(list())
-            print("client " + str(client.id) + " was added")
+            print(f"client {client.id} was added")
             path = os.path.join(util.clients_dir, client.id)
             try:
                 os.mkdir(path, 0o777)
-                print("added dir: " + path)
+                print(f"added dir: {path}")
             except OSError:
                 pass
         else:
-            print("ID " + str(client.id) + " was already found")
+            print(f"ID {client.id} was already found")
 
     def delete_client(self, client_id):
         if client_id in self.client_id_list:
@@ -62,21 +61,21 @@ class Server:
             self.client_list.pop(index)
             self.client_id_list.pop(index)
             self.client_voucher_list.pop(index)
-            print("client " + str(client_id) + " was deleted")
+            print(f"client {client_id} was deleted")
             path_clients_dir = os.path.join(util.clients_dir, client_id)
             path_dec_img_dir = os.path.join(util.dec_img_dir, client_id)
             try:
                 shutil.rmtree(path_clients_dir)
-                print("deleted dir: " + path_clients_dir)
+                print(f"deleted dir: {path_clients_dir}")
             except OSError:
                 pass
             try:
                 shutil.rmtree(path_dec_img_dir)
-                print("deleted dir: " + path_dec_img_dir)
+                print(f"deleted dir: {path_dec_img_dir}")
             except OSError:
                 pass
         else:
-            print("ID " + str(client_id) + " was not found")
+            print(f"ID {client_id} was not found")
 
     def show_clients(self):
         print(self.client_id_list)
@@ -85,16 +84,17 @@ class Server:
         self.cur_id += 1
 
     def check_rehash(self, cnt):
-        if cnt == math.factorial(len(util.hash_list)):
-            print("Could not find usable hash functions in %s tries" % cnt)
+        l = len(util.hash_func_list)
+        if cnt == math.factorial(l):
+            print(f"Could not find usable hash functions in {cnt} tries")
             return
         for i in self.x:
             h1_x, h2_x = util.calc_h(i, self.n_dash, self.h1_index, self.h2_index)
             if h1_x == h2_x:
-                self.h1_index = random.randint(0, 6)
-                self.h2_index = random.randint(0, 6)
+                self.h1_index = random.randint(0, l - 1)
+                self.h2_index = random.randint(0, l - 1)
                 while self.h1_index == self.h2_index:
-                    self.h2_index = random.randint(0, 6)
+                    self.h2_index = random.randint(0, l - 1)
                 self.check_rehash(cnt + 1)
 
     def create_cuckoo_table(self):
@@ -110,7 +110,7 @@ class Server:
         if self.cuckoo[h1_x] == x or self.cuckoo[h2_x] == x:
             return
         if cnt == self.n_dash:
-            print("Cycle detected, %s discarded" % x)
+            print(f"Cycle detected, {x} discarded")
             return
         if self.cuckoo[hashes[n]] is None:
             self.cuckoo[hashes[n]] = x
@@ -144,20 +144,18 @@ class Server:
     def receive_voucher(self, client, voucher):
         index = self.client_id_list.index(client.id)
         self.client_voucher_list[index].append(voucher)
-        print("%s received voucher with ID %s from %s" % (self.name, voucher.id, client.id))
+        print(f"{self.name} received voucher with ID {voucher.id} from {client.id}")
 
     def process_vouchers(self):
         print("processing vouchers")
         index = -1
         IDLIST_GLOBAL = list()
         OUTSET_GLOBAL = list()
-        S_GLOBAL = list()
         for cl in self.client_voucher_list:
             index = index + 1
             # step 0
             SHARES = list()
             IDLIST = list()
-            S = list()
             for v in cl:
                 # step 1
                 IDLIST.append(v.id)
@@ -191,34 +189,18 @@ class Server:
                 OUTSET = ([x[0] for x in SHARES])
                 print("Not enough shares")
             else:
-                RLIST = list()
-                for s in SHARES:
-                    RLIST.append(s[1])
-                indices = util.det_alg(RLIST, self.t)
-                if indices is None:
-                    continue
-                RLIST_T = [RLIST[i] for i in indices]
-                SHARES_dash = list()
-                for s in SHARES:
-                    if s[1] in RLIST_T:
-                        SHARES_dash.append(s)
-                adkey_int = util.recon_adkey(SHARES_dash[0:self.t + 1])
+                adkey_int = util.recon_adkey(dist_sh[:self.t + 1])
                 adkey = int.to_bytes(adkey_int, 16, "big")
                 OUTSET = list()
                 for s in SHARES:
                     ad = util.aes128_dec(adkey, s[2])
                     if ad is not None:
                         OUTSET.append((s[0], ad))
-                path = util.dec_img_dir + self.client_id_list[index] + "/"
+                path = f"{util.dec_img_dir}{self.client_id_list[index]}/"
                 if not os.path.exists(path):
                     os.mkdir(path, 0o777)
-                    print("Created Dir: %s" % path)
+                    print(f"Created Dir: {path}")
                 for t in OUTSET:
                     util.dec_image(t, path)
-                temp = [s[0] for s in SHARES_dash]
-                for s in SHARES:
-                    if s[0] not in temp:
-                        S.append(s[0])
-            S_GLOBAL.append(S)
             IDLIST_GLOBAL.append(IDLIST)
             OUTSET_GLOBAL.append(OUTSET)

@@ -1,5 +1,4 @@
 # Copyright (c) 2021 Anish Athalye. Released under the MIT license.
-
 import tensorflow as tf
 from scipy.ndimage.filters import gaussian_filter
 import os

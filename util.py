@@ -18,14 +18,14 @@ collide_dir = parent_dir + "Collide-Attacks/"
 
 dhf_l = (2 ** 64) - 59
 sh_p = 340282366920938463463374607431768211297
-hash_list = list()
-hash_list.append(hashlib.sha1)
-hash_list.append(hashlib.sha256)
-hash_list.append(hashlib.md5)
-hash_list.append(hashlib.sha3_224)
-hash_list.append(hashlib.sha3_256)
-hash_list.append(hashlib.sha3_384)
-hash_list.append(hashlib.sha3_512)
+hash_func_list = list()
+hash_func_list.append(hashlib.sha1)
+hash_func_list.append(hashlib.sha256)
+hash_func_list.append(hashlib.md5)
+hash_func_list.append(hashlib.sha3_224)
+hash_func_list.append(hashlib.sha3_256)
+hash_func_list.append(hashlib.sha3_384)
+hash_func_list.append(hashlib.sha3_512)
 ecc_p = 115792089210356248762697446949407573530086143415290314195533631308867097853951
 ecc_q = 115792089210356248762697446949407573529996955224135760342422259061068512044369
 ecc_gen_x = 0x6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296
@@ -110,8 +110,8 @@ def calc_rct(rkey, r, adct, sh):
 
 def calc_h(u, n_dash, h1_i, h2_i):
     key = b'password'
-    h1 = hmac.new(key, u.encode(), hash_list[h1_i]).hexdigest()
-    h2 = hmac.new(key, u.encode(), hash_list[h2_i]).hexdigest()
+    h1 = hmac.new(key, u.encode(), hash_func_list[h1_i]).hexdigest()
+    h2 = hmac.new(key, u.encode(), hash_func_list[h2_i]).hexdigest()
     out1 = int.from_bytes(h1.encode(), "big") % n_dash
     out2 = int.from_bytes(h2.encode(), "big") % n_dash
     return out1, out2
@@ -159,7 +159,7 @@ def is_prime(n):
 def recon_adkey(shares):
     values = list()
     for s in shares:
-        sh = json.loads(s[3])
+        sh = json.loads(s)
         values.append((sh['x'], sh['z']))
     adkey = 0
     for v in values:
@@ -173,22 +173,6 @@ def recon_adkey(shares):
 
 
 def dec_image(tup, path):
-    f = open(path + str(tup[0]) + ".png", 'wb')
+    f = open(f"{path}{tup[0].png}", 'wb')
     f.write(tup[1])
     f.close()
-
-
-def det_alg(RLIST, t):
-    # step 1
-    r_expanded = list()
-    for r in RLIST:
-        r_dash = list()
-        for i in range(0, t):
-            val = r[0] ** i % dhf_l
-            r_dash.append(val)
-        for i in range(1, len(r)):
-            r_dash.append(r[i])
-        r_expanded.append(r_dash)
-    # While det_alg does not work
-    indices = [x for x in range(0, t + 1)]
-    return indices
