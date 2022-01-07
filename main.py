@@ -29,13 +29,6 @@ def load_object(f_name):
         print("Error during unpickling object:", e)
 
 
-class Triple:
-    def __init__(self, y, id, ad):
-        self.y = y
-        self.id = id
-        self.ad = ad
-
-
 if os.path.isfile("server.pickle"):
     server = load_object("server.pickle")
 else:
@@ -53,46 +46,15 @@ else:
     except Exception as exe:
         print(f"Failed to delete {util.dec_img_dir} because of {exe}")
 
-collide_management_column = [
-    [
-        sg.Text('Collide Section', size=(27, 1), justification='center', font=("Helvetica", 25), relief=sg.RELIEF_RIDGE)
-    ],
-    [
-        sg.Button("Select as Image"),
-        sg.In(size=(56, 1), enable_events=True, key="-COLLIDE IMAGE-"),
-    ],
-    [
-        sg.Button("Select as Target Hash"),
-        sg.In(size=(51, 1), enable_events=True, key="-TARGET HASH-"),
-    ],
-    [
-        sg.Text("Select Iterations"),
-        sg.Slider(range=(1, 10000), orientation='h', size=(45, 20), default_value=5000, key="-SLIDER ITERATIONS-")
-    ],
-    [
-        sg.Text("Select Blur"),
-        sg.InputCombo((0.0, 0.5, 1.0), size=(24, 1), default_value=0.0, key="-BLUR-"),
-        sg.Button("Try Collision"),
-        sg.Button("Clear Collision Directory")
-    ],
-    [
-        sg.Text('Compare Section', size=(27, 1), justification='center', font=("Helvetica", 25), relief=sg.RELIEF_RIDGE)
-    ],
-    [
-        sg.Button("Select as Hash 1"),
-        sg.In(size=(55, 1), enable_events=True, key="-HASH 1-")
-    ],
-    [
-        sg.Button("Select as Hash 2"),
-        sg.In(size=(55, 1), enable_events=True, key="-HASH 2-")
-    ],
-    [
-        sg.Button("Compare Hashes"),
-        sg.In(size=(55, 1), enable_events=True, key="-HASH XOR-")
-    ]
-]
 
 client_management_column = [
+    [
+        sg.Text('Server Management', size=(27, 1), justification='center', font=("Helvetica", 25), relief=sg.RELIEF_RIDGE)
+    ],
+    [
+        sg.Button("Process Vouchers"),
+
+    ],
     [
         sg.Text('Client Management', size=(27, 1), justification='center', font=("Helvetica", 25), relief=sg.RELIEF_RIDGE)
     ],
@@ -104,7 +66,7 @@ client_management_column = [
     ],
     [
         sg.Listbox(
-            values=server.client_id_list, enable_events=True, size=(70, 42), key="-CLIENT LIST-"
+            values=server.client_id_list, enable_events=True, size=(70, 37), key="-CLIENT LIST-"
         )
     ]
 ]
@@ -120,7 +82,6 @@ file_list_column = [
         sg.Button("Upload")
     ],
     [
-        sg.Button("Process Vouchers"),
         sg.Button("Show Neural Hash")
     ],
     [
@@ -143,8 +104,6 @@ image_viewer_column = [
 
 layout = [
     [
-        sg.Column(collide_management_column),
-        sg.VSeperator(),
         sg.Column(client_management_column),
         sg.VSeperator(),
         sg.Column(file_list_column),
@@ -211,10 +170,13 @@ while True:
             print(f"uploaded file from {filename} to {dst_name}")
             with open(dst_name, "rb") as imageFile:
                 byte_arr = bytearray(imageFile.read())
-            triple = Triple(nnhash.calc_nnhash(dst_name), server.cur_id, byte_arr)
+            y = nnhash.calc_nnhash(dst_name)
+            id = server.cur_id
+            ad = byte_arr
             server.inc_cur_id()
             index = server.client_id_list.index(values["-CLIENT LIST-"][0])
-            server.client_list[index].add_triple(triple)
+            server.client_list[index].add_triple(y, id, ad)
+            server.inc_cur_id()
     elif event == "Process Vouchers":
         server.process_vouchers()
     elif event == "Show Neural Hash":

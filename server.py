@@ -9,12 +9,14 @@ import nnhash
 from Crypto.PublicKey import ECC
 
 
+# server setup - step 0:
 def process_X():
     x = list()
     for img in os.listdir(util.mal_img_dir):
         if img.endswith(".jpg") or img.endswith(".png") or img.endswith(".jpeg"):
             nh = nnhash.calc_nnhash(util.mal_img_dir + img)
             x.append(nh)
+    # Remove any duplicates from x
     x = list(dict.fromkeys(x))
     return x
 
@@ -25,20 +27,20 @@ class Server:
         self.client_list = list()
         self.client_id_list = list()
         self.client_voucher_list = list()
-        self.cur_id = 0
-        self.s = 3
-        self.t = 3
-        self.x = process_X()
-        self.h1_index = 0
-        self.h2_index = 1
-        self.e_dash = 0.5
-        self.n_dash = int((1 + self.e_dash) * len(self.x))
-        self.check_rehash(0)
-        self.cuckoo = list()
-        self.create_cuckoo_table()
-        self.alpha = random.randint(0, util.ecc_q)
+        self.cur_id = 0  # starting value for triple IDs
+        self.t = 3  # threshold value
+        self.t = 3  # threshold value
+        self.X = process_X()  # server setup - step 0
+        self.h1_index = 0  # index of first cuckoo hash function
+        self.h2_index = 1  # index of second cuckoo hash function
+        self.e_dash = 0.3  # factor for size of cuckoo table
+        self.n_dash = int((1 + self.e_dash) * len(self.X))  # size of cuckoo table
+        self.check_rehash(0)  # change cuckoo hash functions if collision occurs
+        self.cuckoo_table = list()
+        self.create_cuckoo_table()  # server setup - step 1
+        self.alpha = random.randint(0, util.ecc_q)  # server setup - step 2
         self.L = (int((self.alpha * util.ecc_gen).x), int((self.alpha * util.ecc_gen).y))
-        self.pdata = self.calc_pdata()
+        self.pdata = self.calc_pdata()  # server setup - step 3 & 4
 
     def add_client(self, client):
         if client.id not in self.client_id_list:
@@ -88,18 +90,23 @@ class Server:
         if cnt == math.factorial(l):
             print(f"Could not find usable hash functions in {cnt} tries")
             return
-        for i in self.x:
+        collision = False
+        for i in self.X:
             h1_x, h2_x = util.calc_h(i, self.n_dash, self.h1_index, self.h2_index)
             if h1_x == h2_x:
+                collision = True
                 self.h1_index = random.randint(0, l - 1)
                 self.h2_index = random.randint(0, l - 1)
                 while self.h1_index == self.h2_index:
                     self.h2_index = random.randint(0, l - 1)
-                self.check_rehash(cnt + 1)
+                break
+        if collision:
+            self.check_rehash(cnt + 1)
 
+    # Server setup - step 1:
     def create_cuckoo_table(self):
-        self.cuckoo = dict.fromkeys((range(self.n_dash)))
-        for i in self.x:
+        self.cuckoo_table = dict.fromkeys((range(self.n_dash)))
+        for i in self.X:
             self.cuckoo_insert(i, 0, 0)
 
     def cuckoo_insert(self, x, n, cnt):
@@ -107,18 +114,18 @@ class Server:
         hashes = list()
         hashes.append(h1_x)
         hashes.append(h2_x)
-        if self.cuckoo[h1_x] == x or self.cuckoo[h2_x] == x:
+        if self.cuckoo_table[h1_x] == x or self.cuckoo_table[h2_x] == x:
             return
         if cnt == self.n_dash:
             print(f"Cycle detected, {x} discarded")
             return
-        if self.cuckoo[hashes[n]] is None:
-            self.cuckoo[hashes[n]] = x
+        if self.cuckoo_table[hashes[n]] is None:
+            self.cuckoo_table[hashes[n]] = x
             return
         else:
-            old_x = self.cuckoo[hashes[n]]
+            old_x = self.cuckoo_table[hashes[n]]
             h1_old_x, h2_old_x = util.calc_h(old_x, self.n_dash, self.h1_index, self.h2_index)
-            self.cuckoo[hashes[n]] = x
+            self.cuckoo_table[hashes[n]] = x
             new_n = 0
             if n == 0:
                 if h1_old_x == h1_x:
@@ -131,12 +138,12 @@ class Server:
     def calc_pdata(self):
         pdata = list()
         pdata.append(self.L)
-        for i in self.cuckoo:
-            if self.cuckoo[i] is None:
+        for i in self.cuckoo_table:
+            if self.cuckoo_table[i] is None:
                 ran = random.randint(0, util.ecc_q)
                 ecc_P = ran * util.ecc_gen
             else:
-                ecc_P = self.alpha * util.calc_H(self.cuckoo[i])
+                ecc_P = self.alpha * util.calc_H(self.cuckoo_table[i])
             P = (int(ecc_P.x), int(ecc_P.y))
             pdata.append(P)
         return pdata
@@ -175,14 +182,13 @@ class Server:
                     rct_dec = util.aes128_dec(rkey2, v.rct)
                 if rct_dec is not None:
                     rct = json.loads(rct_dec)
-                    r = rct['r']
                     adct = rct['adct']
                     sh = rct['sh']
-                    SHARES.append((v.id, r, adct, sh))
+                    SHARES.append((v.id, adct, sh))
             # step 2
             dist_sh = list()
             for s in SHARES:
-                dist_sh.append(s[3])
+                dist_sh.append(s[2])
             dist_sh = list(dict.fromkeys(dist_sh))
             t_dash = len(dist_sh)
             if t_dash <= self.t:
@@ -193,7 +199,7 @@ class Server:
                 adkey = int.to_bytes(adkey_int, 16, "big")
                 OUTSET = list()
                 for s in SHARES:
-                    ad = util.aes128_dec(adkey, s[2])
+                    ad = util.aes128_dec(adkey, s[1])
                     if ad is not None:
                         OUTSET.append((s[0], ad))
                 path = f"{util.dec_img_dir}{self.client_id_list[index]}/"

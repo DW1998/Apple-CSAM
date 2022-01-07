@@ -13,7 +13,6 @@ parent_dir = "D:/Apple-CSAM-Files/"
 clients_dir = parent_dir + "Clients/"
 mal_img_dir = parent_dir + "Malicious-Images/"
 dec_img_dir = parent_dir + "Decrypted-Images/"
-client_id_file = "Client_IDs.csv"
 collide_dir = parent_dir + "Collide-Attacks/"
 
 dhf_l = (2 ** 64) - 59
@@ -59,7 +58,7 @@ def aes128_dec(adkey, adct):
     return ad
 
 
-def calc_prf(fkey, id, s):
+def calc_prf(fkey, id):
     # x, z, x', r' el_of F^2_sh * X * R, X is domain of DHF, R is range of DHF
     h = hmac.new(fkey, bytes(id), hashlib.sha1).hexdigest()
     sh_x = int.from_bytes(h.encode(), "big") % sh_p
@@ -67,21 +66,8 @@ def calc_prf(fkey, id, s):
     sh_z = int.from_bytes(h.encode(), "big") % sh_p
     h = hmac.new(fkey, h.encode(), hashlib.sha1).hexdigest()
     x = int.from_bytes(h.encode(), "big") % dhf_l
-    r = list()
-    for i in range(0, s + 1):
-        h = hmac.new(fkey, h.encode(), hashlib.sha1).hexdigest()
-        r.append(int.from_bytes(h.encode(), "big") % dhf_l)
+    r = None
     return sh_x, sh_z, x, r
-
-
-def calc_dhf(hkey, x):
-    # K x X -> R, l = 64, s = upper bound of set S, t + 1 = threshold number
-    # K := F^s*t_l, X := F_l, R := F^s+1_lk
-    r = list()
-    r.append(x)
-    for p in hkey:
-        r.append(calc_poly(x, p) % dhf_l)
-    return r
 
 
 def init_sh_poly(adkey, t):
@@ -99,12 +85,12 @@ def calc_poly(x, pol):
     return res % sh_p
 
 
-def calc_rct(rkey, r, adct, sh):
-    json_k = ['r', 'adct', 'sh']
-    json_v = [r, adct, sh]
+def calc_rct(rkey, adct, sh):
+    json_k = ['adct', 'sh']
+    json_v = [adct, sh]
     rct_data = json.dumps(dict(zip(json_k, json_v))).encode()
     rct = aes128_enc(rkey, rct_data)
-    rct_dec = aes128_dec(rkey, rct)
+    # rct_dec = aes128_dec(rkey, rct)
     return rct
 
 
@@ -149,13 +135,6 @@ def calc_ct(H_dash_S, rkey):
     return ct
 
 
-def is_prime(n):
-    for i in range(2, int(n ** 0.5) + 1):
-        if n % i == 0:
-            return False
-    return True
-
-
 def recon_adkey(shares):
     values = list()
     for s in shares:
@@ -173,6 +152,6 @@ def recon_adkey(shares):
 
 
 def dec_image(tup, path):
-    f = open(f"{path}{tup[0].png}", 'wb')
+    f = open(f"{path}{tup[0]}.png", 'wb')
     f.write(tup[1])
     f.close()
