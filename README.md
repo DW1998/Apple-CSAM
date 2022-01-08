@@ -1,1 +1,1 @@
-# Implementation of the Apple PSI System
+# Implementation of the tPSI-AD protocol
