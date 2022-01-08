@@ -1,7 +1,6 @@
 import pickle
 import shutil
 
-import collide
 import nnhash
 import PySimpleGUI as sg
 import os
@@ -186,54 +185,6 @@ while True:
             neural_hash = nnhash.calc_nnhash(filename)
             print(neural_hash)
             print(bin(int(neural_hash, 16))[2:].zfill(96))
-    elif event == "Select as Image":
-        if len(values["-FILE LIST-"]) == 0:
-            print("need to select file")
-        else:
-            window["-COLLIDE IMAGE-"].update(filename)
-    elif event == "Select as Target Hash":
-        if len(values["-FILE LIST-"]) == 0:
-            print("need to select file")
-        else:
-            window["-TARGET HASH-"].update(nnhash.calc_nnhash(filename))
-    elif event == "Try Collision":
-        col_img = values["-COLLIDE IMAGE-"]
-        targ_hash = values["-TARGET HASH-"]
-        num_iter = int(values["-SLIDER ITERATIONS-"])
-        blur = values["-BLUR-"]
-        if len(col_img) == 0:
-            print("need to select a collide image")
-        elif len(targ_hash) == 0:
-            print("need to select a target hash")
-        else:
-            print(f"starting collision on target hash {targ_hash} with image {col_img}, (iterations: {num_iter}, blur: {blur})")
-            collide.collide(col_img, targ_hash, num_iter, blur)
-    elif event == "Clear Collision Directory":
-        try:
-            shutil.rmtree(util.collide_dir)
-            os.mkdir(util.collide_dir, 0o777)
-            print(f"Deleted contents in folder {util.collide_dir}")
-        except Exception as ex:
-            print(f"Failed to delete {util.collide_dir} because of {ex}")
-    elif event == "Select as Hash 1":
-        if len(values["-FILE LIST-"]) == 0:
-            print("need to select file")
-        else:
-            window["-HASH 1-"].update(nnhash.calc_nnhash(filename))
-    elif event == "Select as Hash 2":
-        if len(values["-FILE LIST-"]) == 0:
-            print("need to select file")
-        else:
-            window["-HASH 2-"].update(nnhash.calc_nnhash(filename))
-    elif event == "Compare Hashes":
-        if len(values["-HASH 1-"]) == 0 or len(values["-HASH 2-"]) == 0:
-            print("Please select 2 Hashes to compare")
-        else:
-            hash1 = bin(int(values["-HASH 1-"], 16))[2:].zfill(96)
-            hash2 = bin(int(values["-HASH 2-"], 16))[2:].zfill(96)
-            xor = int(hash1, 2) ^ int(hash2, 2)
-            out_hex = hex(xor)[2:].zfill(24)
-            window["-HASH XOR-"].update(out_hex)
 
 window.close()
 

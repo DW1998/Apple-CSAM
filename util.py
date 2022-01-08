@@ -15,16 +15,11 @@ mal_img_dir = parent_dir + "Malicious-Images/"
 dec_img_dir = parent_dir + "Decrypted-Images/"
 collide_dir = parent_dir + "Collide-Attacks/"
 
+# Initialize needed cryptographic values and functions
+hash_func_list = [hashlib.sha1, hashlib.sha256, hashlib.md5, hashlib.sha3_224,
+                  hashlib.sha3_256, hashlib.sha3_384, hashlib.sha3_512]
 dhf_l = (2 ** 64) - 59
 sh_p = 340282366920938463463374607431768211297
-hash_func_list = list()
-hash_func_list.append(hashlib.sha1)
-hash_func_list.append(hashlib.sha256)
-hash_func_list.append(hashlib.md5)
-hash_func_list.append(hashlib.sha3_224)
-hash_func_list.append(hashlib.sha3_256)
-hash_func_list.append(hashlib.sha3_384)
-hash_func_list.append(hashlib.sha3_512)
 ecc_p = 115792089210356248762697446949407573530086143415290314195533631308867097853951
 ecc_q = 115792089210356248762697446949407573529996955224135760342422259061068512044369
 ecc_gen_x = 0x6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296
@@ -32,33 +27,36 @@ ecc_gen_y = 0x4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5
 ecc_gen = ECC.EccPoint(x=int(ecc_gen_x), y=int(ecc_gen_y), curve='p256')
 
 
-def aes128_enc(adkey, ad):
+def aes128_enc(key, data):
+    """Encryption using AES128-GCM with 96-bit nonce"""
     header = b"header"
     nonce = get_random_bytes(12)
-    cipher = AES.new(adkey, AES.MODE_GCM, nonce=nonce)
+    cipher = AES.new(key, AES.MODE_GCM, nonce=nonce)
     cipher.update(header)
-    ciphertext, tag = cipher.encrypt_and_digest(ad)
+    ciphertext, tag = cipher.encrypt_and_digest(data)
 
     json_k = ['nonce', 'header', 'ciphertext', 'tag']
     json_v = [b64encode(x).decode('utf-8') for x in [cipher.nonce, header, ciphertext, tag]]
-    adct = json.dumps(dict(zip(json_k, json_v)))
-    return adct
+    cipher_json = json.dumps(dict(zip(json_k, json_v)))
+    return cipher_json
 
 
-def aes128_dec(adkey, adct):
+def aes128_dec(key, cipher_json):
+    """Decryption using AES128-GCM with 96-bit nonce"""
     try:
-        b64 = json.loads(adct)
+        b64 = json.loads(cipher_json)
         json_k = ['nonce', 'header', 'ciphertext', 'tag']
         jv = {k: b64decode(b64[k]) for k in json_k}
-        cipher = AES.new(adkey, AES.MODE_GCM, nonce=jv['nonce'])
+        cipher = AES.new(key, AES.MODE_GCM, nonce=jv['nonce'])
         cipher.update(jv['header'])
-        ad = cipher.decrypt_and_verify(jv['ciphertext'], jv['tag'])
+        data = cipher.decrypt_and_verify(jv['ciphertext'], jv['tag'])
     except (ValueError, KeyError):
         return None
-    return ad
+    return data
 
 
 def calc_prf(fkey, id):
+    """PRF for calculating x, z, x', r' using HMAC"""
     # x, z, x', r' el_of F^2_sh * X * R, X is domain of DHF, R is range of DHF
     h = hmac.new(fkey, bytes(id), hashlib.sha1).hexdigest()
     sh_x = int.from_bytes(h.encode(), "big") % sh_p
@@ -71,6 +69,7 @@ def calc_prf(fkey, id):
 
 
 def init_sh_poly(adkey, t):
+    """Initializes a shamir secret polynomial and stores the coefficients"""
     a = list()
     a.append(int.from_bytes(adkey, "big"))
     for i in range(1, t + 1):
@@ -79,22 +78,15 @@ def init_sh_poly(adkey, t):
 
 
 def calc_poly(x, pol):
+    """Calculates the result of a polynomial for given x and coefficients"""
     res = 0
     for i in range(0, len(pol)):
         res += pol[i] * (x ** i)
     return res % sh_p
 
 
-def calc_rct(rkey, adct, sh):
-    json_k = ['adct', 'sh']
-    json_v = [adct, sh]
-    rct_data = json.dumps(dict(zip(json_k, json_v))).encode()
-    rct = aes128_enc(rkey, rct_data)
-    # rct_dec = aes128_dec(rkey, rct)
-    return rct
-
-
 def calc_h(u, n_dash, h1_i, h2_i):
+    """Calculates two hashes using the cuckoo table hash functions"""
     key = b'password'
     h1 = hmac.new(key, u.encode(), hash_func_list[h1_i]).hexdigest()
     h2 = hmac.new(key, u.encode(), hash_func_list[h2_i]).hexdigest()
@@ -104,16 +96,20 @@ def calc_h(u, n_dash, h1_i, h2_i):
 
 
 def calc_H(x):
+    """Calculates the hash for hash function H"""
     int_x = int.from_bytes(x.encode(), "big") % ecc_q
     h = int_x * ecc_gen
     return h
 
 
 def hmac_sha256(key, data):
+    """Calculates the hmac using sha256"""
     return hmac.new(key, data, hashlib.sha256).digest()
 
 
 def calc_H_dash(ikm):
+    """Calculates the hash for hash function H' using HKDF
+        Source: https://en.wikipedia.org/wiki/HKDF"""
     salt = b""
     info = b""
     ikm_bytes = int(ikm.x).to_bytes(32, "big")
@@ -130,12 +126,8 @@ def calc_H_dash(ikm):
     return okm[:length]
 
 
-def calc_ct(H_dash_S, rkey):
-    ct = aes128_enc(H_dash_S, rkey)
-    return ct
-
-
 def recon_adkey(shares):
+    """Reconstructs the adkey using a distinct number of shamir shares > t"""
     values = list()
     for s in shares:
         sh = json.loads(s)
@@ -151,7 +143,8 @@ def recon_adkey(shares):
     return adkey
 
 
-def dec_image(tup, path):
+def save_image(tup, path):
+    """Saves an image to a given path"""
     f = open(f"{path}{tup[0]}.png", 'wb')
     f.write(tup[1])
     f.close()
