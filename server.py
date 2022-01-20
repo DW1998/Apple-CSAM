@@ -25,7 +25,7 @@ class Server:
     """Represents the server in the tPSI-AD protocol"""
     def __init__(self, name):
         self.name = name
-        # keep lists for all the clients, their IDs and their vouchers
+        # keep lists for clients, IDs and vouchers
         self.client_list = list()
         self.client_id_list = list()
         self.client_voucher_list = list()
@@ -33,9 +33,9 @@ class Server:
         self.t = 3  # threshold value
         self.t = 3  # threshold value
         self.X = process_X()  # server setup - step 0
-        self.h1_index = 0  # index of first cuckoo hash function
-        self.h2_index = 1  # index of second cuckoo hash function
-        self.e_dash = 0.3  # factor for size of cuckoo table
+        self.h1_index = 0  # index of cuckoo h_1
+        self.h2_index = 1  # index of cuckoo h_2
+        self.e_dash = 0.3  # factor for size of cuckoo
         self.n_dash = int((1 + self.e_dash) * len(self.X))  # size of cuckoo table
         self.select_cuckoo_hashes(0)  # select hash functions for cuckoo table
         self.cuckoo_table = self.create_cuckoo_table()  # server setup - step 1
@@ -50,7 +50,7 @@ class Server:
             self.client_id_list.append(client.id)
             self.client_voucher_list.append(list())
             print(f"client {client.id} was added")
-            # create new directory to store images of the client
+            # create new directory for images of client
             path = os.path.join(util.clients_dir, client.id)
             try:
                 os.mkdir(path, 0o777)
@@ -153,8 +153,8 @@ class Server:
         pdata.append(self.L)
         for i in self.cuckoo_table:
             if self.cuckoo_table[i] is None:
-                ran = random.randint(0, util.ecc_q)
-                ecc_P = ran * util.ecc_gen
+                rand = random.randint(0, util.ecc_q)
+                ecc_P = rand * util.ecc_gen
             else:
                 ecc_P = self.alpha * util.calc_H(self.cuckoo_table[i])
             P = (int(ecc_P.x), int(ecc_P.y))
