@@ -9,6 +9,7 @@ from Crypto.Random import get_random_bytes
 from math import ceil
 
 # root directory (change this for different saving folder)
+# TODO, create folders on initial start
 root_dir = "D:/Apple-CSAM-Files/"
 clients_dir = root_dir + "Clients/"
 mal_img_dir = root_dir + "Malicious-Images/"
