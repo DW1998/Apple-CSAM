@@ -1,5 +1,7 @@
 # Implementation of the tPSI-AD protocol
 
+This repository contains a working implementation of the tPSI-AD protocol presented by Apple
+
 ## Instruction on how to run the implementation:
 
     1. Install the requirements in "requirements.txt".
