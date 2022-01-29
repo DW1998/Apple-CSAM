@@ -9,12 +9,10 @@ from Crypto.Random import get_random_bytes
 from math import ceil
 
 # root directory (change this for different saving folder)
-# TODO, create folders on initial start
 root_dir = "D:/Apple-CSAM-Files/"
 clients_dir = root_dir + "Clients/"
 mal_img_dir = root_dir + "Malicious-Images/"
 dec_img_dir = root_dir + "Decrypted-Images/"
-collide_dir = root_dir + "Collide-Attacks/"
 
 # Initialize needed cryptographic values and functions
 hash_func_list = [hashlib.sha1, hashlib.sha256, hashlib.md5, hashlib.sha3_224,

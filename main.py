@@ -28,6 +28,13 @@ def load_object(f_name):
         print("Error during unpickling object:", e)
 
 
+if not os.path.exists(util.root_dir):
+    os.mkdir(util.root_dir)
+    os.mkdir(util.clients_dir)
+    os.mkdir(util.mal_img_dir)
+    os.mkdir(util.dec_img_dir)
+    print(f"Created dirs: {util.root_dir}, {util.clients_dir}, {util.mal_img_dir} and {util.dec_img_dir}")
+
 if os.path.isfile("server.pickle"):
     server = load_object("server.pickle")
 else:
@@ -45,6 +52,7 @@ else:
     except Exception as exe:
         print(f"Failed to delete {util.dec_img_dir} because of {exe}")
 
+"""Source of Imager Viewer Layout: https://realpython.com/pysimplegui-python/"""
 
 client_management_column = [
     [
@@ -99,8 +107,6 @@ image_viewer_column = [
     [sg.Image(key="-IMAGE-", size=(515, 700))],
 ]
 
-# ----- Full layout -----
-
 layout = [
     [
         sg.Column(client_management_column),
@@ -113,8 +119,6 @@ layout = [
 
 window = sg.Window("Apple CSAM", layout)
 filename = ""
-
-# Run the Event Loop
 
 while True:
     event, values = window.read()
