@@ -31,7 +31,6 @@ class Server:
         self.client_voucher_list = list()
         self.cur_id = 0  # starting value for triple IDs
         self.t = 3  # threshold value
-        self.t = 3  # threshold value
         self.X = process_X()  # server setup - step 0
         self.h1_index = 0  # index of cuckoo h_1
         self.h2_index = 1  # index of cuckoo h_2

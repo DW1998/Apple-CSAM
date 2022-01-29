@@ -30,10 +30,12 @@ def load_object(f_name):
 
 if not os.path.exists(util.root_dir):
     os.mkdir(util.root_dir)
+if not os.path.exists(util.clients_dir):
     os.mkdir(util.clients_dir)
+if not os.path.exists(util.mal_img_dir):
     os.mkdir(util.mal_img_dir)
+if not os.path.exists(util.dec_img_dir):
     os.mkdir(util.dec_img_dir)
-    print(f"Created dirs: {util.root_dir}, {util.clients_dir}, {util.mal_img_dir} and {util.dec_img_dir}")
 
 if os.path.isfile("server.pickle"):
     server = load_object("server.pickle")
